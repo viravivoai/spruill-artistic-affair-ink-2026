@@ -78,18 +78,14 @@
             z-index: 1;
         }
 
-        /* Navigation */
+        /* Navigation - inline at top */
         nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            padding: 1rem 2rem;
-            background: rgba(250, 247, 240, 0.95);
+            position: relative;
+            z-index: 100;
+            padding: 1.5rem 2rem;
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            backdrop-filter: blur(10px);
         }
 
         .nav-links {
@@ -124,15 +120,13 @@
             width: 100%;
         }
 
-        /* Main Content Area */
+        /* Main Content Area - no background overlay */
         .main-content {
             max-width: 900px;
             margin: 0 auto;
             position: relative;
             z-index: 10;
-            background: rgba(250, 247, 240, 0.85);
             padding: 2rem;
-            border-radius: 4px;
         }
 
         /* Sections */
@@ -148,7 +142,8 @@
         /* Hero Section */
         .hero {
             text-align: center;
-            padding-top: 120px;
+            padding-top: 0;
+            min-height: auto;
         }
 
         .hero-content {
@@ -576,7 +571,13 @@
         /* Responsive */
         @media (max-width: 768px) {
             .nav-links {
-                display: none;
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-links a {
+                font-size: 0.85rem;
             }
 
             .stats-row {
@@ -592,7 +593,7 @@
             }
 
             .hero {
-                padding-top: 100px;
+                padding-top: 0;
             }
         }
 
@@ -623,7 +624,7 @@
     <!-- Hero Section -->
     <section class="section hero">
         <div class="main-content">
-            <div class="hero-content">
+            <div class="hero-content content-box" style="text-align: center;">
                 <img src="images/spruill-ink-logo-transparent.png" alt="Spruill Center for the Arts - Artistic Affair 2026" class="hero-logo">
                 
                 <div class="date-box">
@@ -652,19 +653,19 @@
     <!-- About Section -->
     <section id="about" class="section">
         <div class="main-content">
-            <h2 class="section-title scroll-reveal">About the Event</h2>
-            
-            <div class="content-box scroll-reveal">
-                <p>
+            <div class="content-box scroll-reveal" style="text-align: center;">
+                <h2 class="section-title">About the Event</h2>
+                
+                <p style="text-align: left;">
                     <strong class="highlight">Spruill Center for the Arts</strong><br>
                     5339 Chamblee Dunwoody Rd, Dunwoody, GA 30338
                 </p>
                 
-                <p>
+                <p style="text-align: left;">
                     Welcome to the <span class="highlight">40th Annual Artistic Affair</span> — a celebration of creativity, community, and the transformative power of art! Join us for an unforgettable evening inspired by the bold, expressive energy of ink art and street murals.
                 </p>
                 
-                <p>
+                <p style="text-align: left; margin-bottom: 0;">
                     Bid on amazing items in our live and silent auctions featuring artwork from students, instructors, and local artists! Enjoy music, participate in costume contests, enter raffles, and so much more as we raise funds for arts education in our community.
                 </p>
             </div>
@@ -689,7 +690,9 @@
     <!-- Activities Section -->
     <section id="activities" class="section">
         <div class="main-content">
-            <h2 class="section-title scroll-reveal">Activities & Fun</h2>
+            <div class="content-box scroll-reveal" style="text-align: center; margin-bottom: 1.5rem;">
+                <h2 class="section-title" style="margin-bottom: 0;">Activities & Fun</h2>
+            </div>
             
             <div class="activities-grid">
                 <div class="activity-card scroll-reveal">
@@ -733,15 +736,16 @@
     <!-- Mural Section -->
     <section class="section">
         <div class="main-content">
-            <h2 class="section-title scroll-reveal">Collaborative Mural</h2>
-            
-            <div class="mural-content scroll-reveal">
-                <div class="haring-figures">
+            <div class="content-box scroll-reveal" style="text-align: center; margin-bottom: 1.5rem;">
+                <h2 class="section-title" style="margin-bottom: 0;">Collaborative Mural</h2>
+                <div class="haring-figures" style="margin-top: 1.5rem;">
                     <span class="haring-figure">🕺</span>
                     <span class="haring-figure">💃</span>
                     <span class="haring-figure">🏃</span>
                 </div>
-                
+            </div>
+            
+            <div class="mural-content scroll-reveal" style="display: block;">
                 <div class="mural-text content-box">
                     <h3>The Inspiration</h3>
                     <p>Bold lines, dynamic figures, and expressive movement — inspired by the iconic street art that transformed pop culture.</p>
@@ -762,7 +766,9 @@
     <!-- Signature Cocktail Section -->
     <section class="section">
         <div class="main-content" style="text-align: center;">
-            <h2 class="section-title scroll-reveal">Signature Cocktail</h2>
+            <div class="content-box scroll-reveal" style="margin-bottom: 2rem;">
+                <h2 class="section-title" style="margin-bottom: 0;">Signature Cocktail</h2>
+            </div>
             
             <div class="cocktail-card scroll-reveal">
                 <h3 class="cocktail-name">The Dunwoody Vice</h3>
@@ -784,9 +790,11 @@
     <!-- Sponsors Section -->
     <section id="sponsors" class="section">
         <div class="main-content">
-            <h2 class="section-title scroll-reveal">Our Sponsors</h2>
+            <div class="content-box scroll-reveal" style="text-align: center; margin-bottom: 1.5rem;">
+                <h2 class="section-title" style="margin-bottom: 0;">Our Sponsors</h2>
+            </div>
             
-            <div class="sponsor-tier scroll-reveal">
+            <div class="sponsor-tier content-box scroll-reveal">
                 <p class="tier-title">Presenting Sponsors</p>
                 <div class="sponsor-logos">
                     <a href="https://www.regencycenters.com/" target="_blank" class="sponsor-logo">
@@ -798,7 +806,7 @@
                 </div>
             </div>
             
-            <div class="sponsor-tier scroll-reveal">
+            <div class="sponsor-tier content-box scroll-reveal">
                 <p class="tier-title">Art Experience Sponsor</p>
                 <div class="sponsor-logos">
                     <a href="https://www.jwbrealty.com/" target="_blank" class="sponsor-logo">
@@ -807,7 +815,7 @@
                 </div>
             </div>
             
-            <div class="sponsor-tier scroll-reveal">
+            <div class="sponsor-tier content-box scroll-reveal">
                 <p class="tier-title">Art Patrons</p>
                 <div class="sponsor-logos">
                     <a href="https://interlokit.com/" target="_blank" class="sponsor-logo">
@@ -836,10 +844,11 @@
     <!-- Hosts Section -->
     <section class="section">
         <div class="main-content" style="text-align: center;">
-            <h2 class="section-title scroll-reveal">2026 Hosts</h2>
-            
             <div class="hosts-list scroll-reveal content-box">
+                <h2 class="section-title">2026 Hosts</h2>
+                <div style="margin-top: 1.5rem;">
                 Anonymous Supporter • Jan & Olen Akers • Dawn Brost • Leslie & Frank Cannon • Laura Cooper • James (Jim) & Corrine Cramer • Marie Crean • Steve & Jane Dolinger • Su & Richard Ellis • Fran & Jim Fuchs • Paul & Julie Hagedorn • Carlton Hardee • Susan & Richard Jakubecy • Terry & Alan Kemp • Kay Loerch • Amy & Dan McMorrow • Fran & Mary Millar • Irv & Libba Morris • Jill Morrisey • Joyce Neimann • Rob & Nancy Ortner • Cindy & Tom Pietkiewicz • Beth & Bob Saxe • Christine Self • Tracy Simmons • Leslie & Mike Sivewright • Camille & Mike Toppo • Pat Troxel • Kathy Walton • Pam Wetzel
+                </div>
             </div>
             
             <div style="margin-top: 2rem;" class="scroll-reveal">
@@ -853,10 +862,9 @@
     <!-- Donate Section -->
     <section class="section">
         <div class="main-content" style="text-align: center;">
-            <h2 class="section-title scroll-reveal">Donate to the Auction</h2>
-            
             <div class="content-box scroll-reveal">
-                <p>
+                <h2 class="section-title">Donate to the Auction</h2>
+                <p style="margin-top: 1.5rem;">
                     Are you a business or artist looking to support the arts? Donate artwork, gift cards, or other goods to our Artistic Affair silent auction!
                 </p>
                 <p>
