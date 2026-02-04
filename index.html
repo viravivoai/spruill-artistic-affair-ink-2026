@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spirits for Spruill - Artistic Affair 2026 | Ink Art Celebration</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Rock+Salt&family=Cabin+Sketch:wght@400;700&family=Kalam:wght@300;400;700&family=Shadows+Into+Light&family=Patrick+Hand&family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://demosite2.blob.core.windows.net/lib/fontawesome6.2.1/css/all.min.css" />
+    <style>
+        :root {
+            --ink-black: #1a1a1a;
+            --ink-dark: #2d2d2d;
+            --paper-white: #f5f2eb;
+            --paper-cream: #faf7f0;
+            --ink-red: #e63946;
+            --ink-blue: #457b9d;
+            --ink-yellow: #f4a261;
+            --ink-green: #2a9d8f;
+            --ink-purple: #9b5de5;
+            --ink-orange: #f77f00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Patrick Hand', cursive;
+            background: var(--paper-cream);
+            color: var(--ink-black);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* SVG Ink Drawing Background */
+        .ink-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .ink-canvas svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .ink-path {
+            fill: none;
+            stroke: var(--ink-black);
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0.15;
+        }
+
+        /* Paper texture overlay */
+        .paper-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: rgba(245, 242, 235, 0.95);
+            border-bottom: 3px solid var(--ink-black);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .spruill-logo {
+            height: 70px;
+            width: auto;
+            transition: all 0.3s;
+        }
+
+        .spruill-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--ink-black);
+            text-decoration: none;
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--ink-black);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Sections */
+        .section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 6rem 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding-top: 120px;
+        }
+
+        .hero-content {
+            z-index: 10;
+            transform: translateY(30px);
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.3s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .hero-logo {
+            max-width: 500px;
+            width: 90%;
+            height: auto;
+            margin-bottom: 2rem;
+            filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.1));
+        }
+
+        .hero .date-box {
+            background: var(--paper-white);
+            border: 4px solid var(--ink-black);
+            padding: 2rem 3rem;
+            display: inline-block;
+            margin: 2rem 0;
+            box-shadow: 6px 6px 0 var(--ink-black);
+            transform: rotate(-1deg);
+        }
+
+        .hero .date {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.8rem;
+            color: var(--ink-black);
+            letter-spacing: 2px;
+        }
+
+        .hero .time {
+            font-family: 'Kalam', cursive;
+            color: var(--ink-dark);
+            font-size: 1.3rem;
+            margin-top: 0.5rem;
+        }
+
+        .hero .tagline {
+            font-family: 'Shadows Into Light', cursive;
+            font-size: 1.6rem;
+            color: var(--ink-dark);
+            margin-top: 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1.2rem 2.5rem;
+            margin: 0.8rem;
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--paper-white);
+            background: var(--ink-black);
+            border: 3px solid var(--ink-black);
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+            letter-spacing: 2px;
+        }
+
+        .cta-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 rgba(0,0,0,0.4);
+        }
+
+        .cta-button.secondary {
+            background: var(--paper-white);
+            color: var(--ink-black);
+        }
+
+        .cta-button.secondary:hover {
+            background: var(--ink-black);
+            color: var(--paper-white);
+        }
+
+        .early-bird {
+            margin-top: 2rem;
+            font-family: 'Rock Salt', cursive;
+            font-size: 1.1rem;
+            color: var(--ink-red);
+            transform: rotate(-2deg);
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-family: 'Amatic SC', cursive;
+            font-weight: 700;
+            font-size: clamp(3rem, 8vw, 5rem);
+            color: var(--ink-black);
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 4px;
+            background: var(--ink-black);
+            border-radius: 2px;
+        }
+
+        /* Content boxes */
+        .content-box {
+            background: var(--paper-white);
+            border: 3px solid var(--ink-black);
+            padding: 2.5rem;
+            box-shadow: 5px 5px 0 var(--ink-black);
+            margin-bottom: 2rem;
+        }
+
+        .content-box p {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            line-height: 1.8;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 50%, rgba(244,162,97,0.4) 50%);
+            padding: 0 4px;
+        }
+
+        /* Stats */
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+            background: var(--paper-white);
+            border: 3px solid var(--ink-black);
+            padding: 1.5rem 2rem;
+            box-shadow: 4px 4px 0 var(--ink-black);
+        }
+
+        .stat-number {
+            font-family: 'Cabin Sketch', cursive;
+            font-weight: 700;
+            font-size: 2.8rem;
+            color: var(--ink-black);
+            display: block;
+        }
+
+        .stat-label {
+            font-family: 'Kalam', cursive;
+            color: var(--ink-dark);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Ink Divider */
+        .ink-divider {
+            width: 100%;
+            height: 60px;
+            position: relative;
+            z-index: 20;
+            overflow: hidden;
+        }
+
+        .ink-divider svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Activities Section */
+        .activities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .activity-card {
+            background: var(--paper-white);
+            border: 3px solid var(--ink-black);
+            padding: 1.5rem;
+            transition: all 0.3s;
+            box-shadow: 4px 4px 0 var(--ink-black);
+        }
+
+        .activity-card:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 7px 7px 0 var(--ink-black);
+        }
+
+        .activity-card h3 {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.3rem;
+            color: var(--ink-black);
+            margin-bottom: 0.8rem;
+            border-bottom: 2px solid var(--ink-black);
+            padding-bottom: 0.5rem;
+        }
+
+        .activity-card p, .activity-card ul {
+            font-size: 1.05rem;
+            color: var(--ink-dark);
+            line-height: 1.7;
+        }
+
+        .activity-card ul {
+            margin-left: 1.5rem;
+            margin-top: 0.8rem;
+        }
+
+        /* Mural Section */
+        .mural-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .mural-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .haring-figures {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            font-size: 5rem;
+        }
+
+        .haring-figure {
+            animation: bounce 1s ease-in-out infinite alternate;
+        }
+
+        .haring-figure:nth-child(2) { animation-delay: 0.15s; }
+        .haring-figure:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        .mural-text h3 {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.3rem;
+            color: var(--ink-black);
+            margin-bottom: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .mural-text h3:first-child {
+            margin-top: 0;
+        }
+
+        .mural-text p {
+            color: var(--ink-dark);
+            margin-bottom: 0.8rem;
+            line-height: 1.7;
+        }
+
+        /* Cocktail Section */
+        .cocktail-card {
+            background: var(--paper-white);
+            border: 4px solid var(--ink-black);
+            padding: 3rem;
+            max-width: 450px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 6px 6px 0 var(--ink-black);
+            text-align: center;
+        }
+
+        .cocktail-card::before {
+            content: '🍹';
+            font-size: 4rem;
+            position: absolute;
+            top: -2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .cocktail-name {
+            font-family: 'Rock Salt', cursive;
+            font-size: 2rem;
+            color: var(--ink-black);
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cocktail-subtitle {
+            font-family: 'Shadows Into Light', cursive;
+            color: var(--ink-dark);
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cocktail-ingredients {
+            color: var(--ink-dark);
+            text-align: left;
+            padding: 1rem;
+            background: rgba(0,0,0,0.03);
+            border: 2px dashed var(--ink-black);
+        }
+
+        /* Sponsors Section */
+        .sponsor-tier {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .tier-title {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.4rem;
+            color: var(--ink-black);
+            margin-bottom: 1rem;
+            display: inline-block;
+            border-bottom: 3px solid var(--ink-black);
+            padding-bottom: 0.3rem;
+        }
+
+        .sponsor-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .sponsor-logo {
+            background: white;
+            padding: 1rem;
+            max-width: 160px;
+            border: 2px solid var(--ink-black);
+            transition: all 0.3s;
+            box-shadow: 3px 3px 0 var(--ink-black);
+        }
+
+        .sponsor-logo:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 var(--ink-black);
+        }
+
+        .sponsor-logo img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Hosts Section */
+        .hosts-list {
+            font-family: 'Kalam', cursive;
+            color: var(--ink-dark);
+            font-size: 1.1rem;
+            line-height: 2;
+            text-align: center;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--ink-black);
+            color: var(--paper-white);
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 20;
+        }
+
+        .footer-logo {
+            height: 80px;
+            width: auto;
+            margin-bottom: 1.5rem;
+            filter: brightness(0) invert(1);
+        }
+
+        .footer-title {
+            font-family: 'Amatic SC', cursive;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            font-size: 2rem;
+            color: var(--paper-white);
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--ink-yellow);
+            transform: scale(1.2);
+        }
+
+        .footer-info {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+        }
+
+        .footer-info a {
+            color: var(--ink-yellow);
+            text-decoration: none;
+        }
+
+        /* Scroll animations */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease-out;
+        }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .stats-row {
+                gap: 1.5rem;
+            }
+
+            .activities-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 4rem 1rem;
+            }
+
+            .hero {
+                padding-top: 100px;
+            }
+
+            .hero-logo {
+                width: 85%;
+            }
+        }
+
+        /* Color accent classes */
+        .accent-red { color: var(--ink-red); }
+        .accent-blue { color: var(--ink-blue); }
+        .accent-yellow { color: var(--ink-yellow); }
+        .accent-green { color: var(--ink-green); }
+        .accent-purple { color: var(--ink-purple); }
+        .accent-orange { color: var(--ink-orange); }
+    </style>
+</head>
+<body>
+    <!-- SVG Ink Drawing Canvas -->
+    <div class="ink-canvas">
+        <svg id="inkSvg" viewBox="0 0 100 1000" preserveAspectRatio="none">
+            <!-- Paths will be generated by JavaScript -->
+        </svg>
+    </div>
+
+    <div class="paper-texture"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="https://www.spruillarts.org/" target="_blank" class="nav-logo">
+            <img src="images/spruill-ink-logo.png" alt="Spruill Center for the Arts" class="spruill-logo">
+        </a>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#activities">Activities</a></li>
+            <li><a href="#sponsors">Sponsors</a></li>
+            <li><a href="https://wedoauctions.com/app/public/bidapp/spruillarts/tickets/Artistic_Affair" target="_blank">Tickets</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="section hero">
+        <div class="main-content">
+            <div class="hero-content">
+                <img src="images/spruill-ink-logo.png" alt="Spruill Center for the Arts - Artistic Affair 2026" class="hero-logo">
+                
+                <div class="date-box">
+                    <span class="date">Saturday, March 28th, 2026</span>
+                    <div class="time">5:30pm - 9:00pm</div>
+                </div>
+                
+                <p class="tagline">An evening of art, community & creativity!</p>
+                
+                <div style="margin-top: 2.5rem;">
+                    <a href="https://wedoauctions.com/app/public/bidapp/spruillarts/tickets/Artistic_Affair?p=individual" class="cta-button" target="_blank">
+                        Get Tickets
+                    </a>
+                    <a href="https://wedoauctions.com/app/public/bidapp/spruillarts/tickets/Artistic_Affair?p=sponsor" class="cta-button secondary" target="_blank">
+                        Become a Sponsor
+                    </a>
+                </div>
+                
+                <p class="early-bird">
+                    Early Bird ends Feb 15 — 20% OFF!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ink Divider -->
+    <div class="ink-divider">
+        <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
+            <path d="M0,30 Q100,10 200,30 T400,30 T600,30 T800,30 T1000,30 T1200,30" stroke="#1a1a1a" stroke-width="3" fill="none"/>
+            <path d="M0,40 Q150,60 300,40 T600,40 T900,40 T1200,40" stroke="#1a1a1a" stroke-width="2" fill="none" opacity="0.5"/>
+        </svg>
+    </div>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="main-content">
+            <h2 class="section-title scroll-reveal">About the Event</h2>
+            
+            <div class="content-box scroll-reveal">
+                <p>
+                    <strong class="highlight">Spruill Center for the Arts</strong><br>
+                    5339 Chamblee Dunwoody Rd, Dunwoody, GA 30338
+                </p>
+                
+                <p>
+                    Welcome to the <span class="highlight">40th Annual Artistic Affair</span> — a celebration of creativity, community, and the transformative power of art! Join us for an unforgettable evening inspired by the bold, expressive energy of ink art and street murals.
+                </p>
+                
+                <p>
+                    Bid on amazing items in our live and silent auctions featuring artwork from students, instructors, and local artists! Enjoy music, participate in costume contests, enter raffles, and so much more as we raise funds for arts education in our community.
+                </p>
+            </div>
+            
+            <div class="stats-row scroll-reveal">
+                <div class="stat">
+                    <span class="stat-number">350+</span>
+                    <span class="stat-label">Guests Last Year</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">$112K</span>
+                    <span class="stat-label">Raised in 2025</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">$17.5K</span>
+                    <span class="stat-label">For Scholarships</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Activities Section -->
+    <section id="activities" class="section">
+        <div class="main-content">
+            <h2 class="section-title scroll-reveal">Activities & Fun</h2>
+            
+            <div class="activities-grid">
+                <div class="activity-card scroll-reveal">
+                    <h3>🎨 Live Art Demos</h3>
+                    <p>Watch talented artists create stunning works right before your eyes. Get inspired and maybe even try your hand!</p>
+                </div>
+                
+                <div class="activity-card scroll-reveal">
+                    <h3>🖼️ Silent Auction</h3>
+                    <p>Bid on unique pieces from local artists, students, and instructors. Take home something special!</p>
+                </div>
+                
+                <div class="activity-card scroll-reveal">
+                    <h3>🎭 Costume Contest</h3>
+                    <p>Show off your creative side! Solo and group categories with prizes for the most artistic looks.</p>
+                </div>
+                
+                <div class="activity-card scroll-reveal">
+                    <h3>🎶 Live Music & DJ</h3>
+                    <p>Dance the night away with great tunes and an energetic atmosphere!</p>
+                </div>
+                
+                <div class="activity-card scroll-reveal">
+                    <h3>🎟️ Raffles & Prizes</h3>
+                    <p>Enter for your chance to win amazing prizes throughout the evening!</p>
+                </div>
+                
+                <div class="activity-card scroll-reveal">
+                    <h3>📸 Photo Booth</h3>
+                    <p>Capture memories with fun props and a creative backdrop!</p>
+                    <ul>
+                        <li>Props galore</li>
+                        <li>Instant prints</li>
+                        <li>Social media sharing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mural Section -->
+    <section class="section">
+        <div class="main-content">
+            <h2 class="section-title scroll-reveal">Collaborative Mural</h2>
+            
+            <div class="mural-content scroll-reveal">
+                <div class="haring-figures">
+                    <span class="haring-figure">🕺</span>
+                    <span class="haring-figure">💃</span>
+                    <span class="haring-figure">🏃</span>
+                </div>
+                
+                <div class="mural-text content-box">
+                    <h3>The Inspiration</h3>
+                    <p>Bold lines, dynamic figures, and expressive movement — inspired by the iconic street art that transformed pop culture.</p>
+                    
+                    <h3>The Activation</h3>
+                    <p>A large canvas awaits your contribution. We'll start with signature figures to set the tone, then it's your turn!</p>
+                    
+                    <h3>The Challenge</h3>
+                    <p>Grab a marker and add your own simple, active figures. Fill the gaps and make your mark!</p>
+                    
+                    <h3 class="accent-red">Fundraising Tie-in</h3>
+                    <p>At the end of the night, the mural will be cut into squares and sold as unique, collaborative art pieces!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Signature Cocktail Section -->
+    <section class="section">
+        <div class="main-content" style="text-align: center;">
+            <h2 class="section-title scroll-reveal">Signature Cocktail</h2>
+            
+            <div class="cocktail-card scroll-reveal">
+                <h3 class="cocktail-name">The Dunwoody Vice</h3>
+                <p class="cocktail-subtitle">Fruity, sweet, and totally delicious</p>
+                
+                <div class="cocktail-ingredients">
+                    <p><strong>Ingredients:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Vodka</li>
+                        <li>Peach Schnapps</li>
+                        <li>Cranberry Juice</li>
+                        <li>Orange Juice</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sponsors Section -->
+    <section id="sponsors" class="section">
+        <div class="main-content">
+            <h2 class="section-title scroll-reveal">Our Sponsors</h2>
+            
+            <div class="sponsor-tier scroll-reveal">
+                <p class="tier-title">Presenting Sponsors</p>
+                <div class="sponsor-logos">
+                    <a href="https://www.regencycenters.com/" target="_blank" class="sponsor-logo">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/sponsor_0_NMdbr6hqyn.jpg" alt="Regency Centers">
+                    </a>
+                    <a href="https://www.tridentconstructiongroup.com/" target="_blank" class="sponsor-logo">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/sponsor_3_RiaAf5ca4l.jpg" alt="Trident Construction Group">
+                    </a>
+                </div>
+            </div>
+            
+            <div class="sponsor-tier scroll-reveal">
+                <p class="tier-title">Art Experience Sponsor</p>
+                <div class="sponsor-logos">
+                    <a href="https://www.jwbrealty.com/" target="_blank" class="sponsor-logo">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/sponsor_9_t3OulPFbBN.png" alt="JWB Realty Services">
+                    </a>
+                </div>
+            </div>
+            
+            <div class="sponsor-tier scroll-reveal">
+                <p class="tier-title">Art Patrons</p>
+                <div class="sponsor-logos">
+                    <a href="https://interlokit.com/" target="_blank" class="sponsor-logo">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/sponsor_V1Z9m0z8gV.jpg" alt="Interlokit">
+                    </a>
+                    <a href="https://www.ubsi-inc.com/" target="_blank" class="sponsor-logo">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/sponsor_Zv7EomhxSh.jpg" alt="United Bankshares">
+                    </a>
+                    <a href="https://roughdraftatlanta.com/" target="_blank" class="sponsor-logo">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/sponsor_a5gOwBai6E.png" alt="Dunwoody Reporter">
+                    </a>
+                    <a href="https://www.georgiasown.org/" target="_blank" class="sponsor-logo">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/sponsor_lVLFtATNPR.png" alt="Georgia's Own Credit Union">
+                    </a>
+                    <a href="https://www.savdist.com/" target="_blank" class="sponsor-logo">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/sponsor_u7ibFEEy9t.jpg" alt="Savannah Distributing">
+                    </a>
+                    <a href="https://perimeteratl.com/perimeter-cids/" target="_blank" class="sponsor-logo">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/sponsor_vVnJllhxyl.png" alt="Perimeter CIDs">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hosts Section -->
+    <section class="section">
+        <div class="main-content" style="text-align: center;">
+            <h2 class="section-title scroll-reveal">2026 Hosts</h2>
+            
+            <div class="hosts-list scroll-reveal content-box">
+                Anonymous Supporter • Jan & Olen Akers • Dawn Brost • Leslie & Frank Cannon • Laura Cooper • James (Jim) & Corrine Cramer • Marie Crean • Steve & Jane Dolinger • Su & Richard Ellis • Fran & Jim Fuchs • Paul & Julie Hagedorn • Carlton Hardee • Susan & Richard Jakubecy • Terry & Alan Kemp • Kay Loerch • Amy & Dan McMorrow • Fran & Mary Millar • Irv & Libba Morris • Jill Morrisey • Joyce Neimann • Rob & Nancy Ortner • Cindy & Tom Pietkiewicz • Beth & Bob Saxe • Christine Self • Tracy Simmons • Leslie & Mike Sivewright • Camille & Mike Toppo • Pat Troxel • Kathy Walton • Pam Wetzel
+            </div>
+            
+            <div style="margin-top: 2rem;" class="scroll-reveal">
+                <a href="https://wedoauctions.com/app/public/bidapp/spruillarts/tickets/Artistic_Affair?p=sponsor" class="cta-button" target="_blank">
+                    Become a Host
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Donate Section -->
+    <section class="section">
+        <div class="main-content" style="text-align: center;">
+            <h2 class="section-title scroll-reveal">Donate to the Auction</h2>
+            
+            <div class="content-box scroll-reveal">
+                <p>
+                    Are you a business or artist looking to support the arts? Donate artwork, gift cards, or other goods to our Artistic Affair silent auction!
+                </p>
+                <p>
+                    Contact Spruill's Community Programs and Events Coordinator:<br>
+                    <a href="mailto:bthomas@spruillarts.org" style="color: var(--ink-blue); font-weight: bold;">
+                        bthomas@spruillarts.org
+                    </a>
+                </p>
+                
+                <div style="margin-top: 1.5rem;">
+                    <a href="https://wedoauctions.com/app/public/bidapp/spruillarts/donate" class="cta-button secondary" target="_blank">
+                        Donate Item
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <a href="https://www.spruillarts.org/" target="_blank">
+            <img src="images/spruill-ink-logo.png" alt="Spruill Center for the Arts" class="footer-logo">
+        </a>
+        
+        <div class="footer-title">Artistic Affair 2026</div>
+        
+        <div class="social-links">
+            <a href="https://www.facebook.com/spruillarts" target="_blank" title="Facebook">
+                <i class="fab fa-facebook"></i>
+            </a>
+            <a href="https://www.instagram.com/spruillarts" target="_blank" title="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+        </div>
+        
+        <div class="footer-info">
+            <p>Spruill Center for the Arts</p>
+            <p>5339 Chamblee Dunwoody Rd, Dunwoody, GA 30338</p>
+            <p style="margin-top: 1rem;">
+                Questions? <a href="mailto:bthomas@spruillarts.org">Contact Barb Thomas</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Ink Drawing & Scroll Scripts -->
+    <script>
+        // Generate random ink paths that meander left-middle-right
+        function generateInkPaths() {
+            const svg = document.getElementById('inkSvg');
+            const numPaths = 25; // Number of continuous ink lines
+            
+            for (let i = 0; i < numPaths; i++) {
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.classList.add('ink-path');
+                
+                // Generate a meandering path
+                const d = generateMeanderingPath(i, numPaths);
+                path.setAttribute('d', d);
+                
+                // Calculate path length for animation
+                svg.appendChild(path);
+                const length = path.getTotalLength();
+                
+                // Set up stroke dash for drawing animation
+                path.style.strokeDasharray = length;
+                path.style.strokeDashoffset = length;
+                
+                // Store length for scroll animation
+                path.dataset.length = length;
+                path.dataset.startScroll = (i / numPaths) * 0.7; // Stagger start times
+            }
+        }
+        
+        function generateMeanderingPath(index, total) {
+            const points = [];
+            const segments = 15 + Math.floor(Math.random() * 10);
+            
+            // Starting position - distribute across the page
+            let x = 10 + (index % 3) * 30 + Math.random() * 20;
+            let y = (index / total) * 100;
+            
+            points.push(`M ${x} ${y}`);
+            
+            // Pattern: left, middle, right, middle with variations
+            const directions = ['left', 'middle', 'right', 'middle'];
+            
+            for (let i = 0; i < segments; i++) {
+                const direction = directions[i % 4];
+                const yStep = 50 + Math.random() * 80;
+                
+                // Determine x target based on direction
+                let targetX;
+                switch(direction) {
+                    case 'left':
+                        targetX = 5 + Math.random() * 25;
+                        break;
+                    case 'right':
+                        targetX = 70 + Math.random() * 25;
+                        break;
+                    case 'middle':
+                    default:
+                        targetX = 35 + Math.random() * 30;
+                        break;
+                }
+                
+                // Add some organic curves
+                const cx1 = x + (Math.random() - 0.5) * 30;
+                const cy1 = y + yStep * 0.3 + (Math.random() - 0.5) * 20;
+                const cx2 = targetX + (Math.random() - 0.5) * 30;
+                const cy2 = y + yStep * 0.7 + (Math.random() - 0.5) * 20;
+                
+                y += yStep;
+                x = targetX;
+                
+                // Mix of curve types for organic feel
+                if (Math.random() > 0.3) {
+                    points.push(`C ${cx1} ${cy1} ${cx2} ${cy2} ${x} ${y}`);
+                } else {
+                    points.push(`Q ${cx1} ${cy1} ${x} ${y}`);
+                }
+                
+                // Add small doodle segments occasionally
+                if (Math.random() > 0.7) {
+                    const loopX = x + (Math.random() - 0.5) * 15;
+                    const loopY = y + Math.random() * 10;
+                    points.push(`Q ${loopX} ${loopY} ${x + (Math.random() - 0.5) * 5} ${y + 5}`);
+                    y += 5;
+                }
+            }
+            
+            return points.join(' ');
+        }
+        
+        // Scroll-based path drawing animation
+        function updateInkDrawing() {
+            const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+            const paths = document.querySelectorAll('.ink-path');
+            
+            paths.forEach(path => {
+                const length = parseFloat(path.dataset.length);
+                const startScroll = parseFloat(path.dataset.startScroll);
+                
+                // Calculate draw progress based on scroll position
+                let progress = (scrollPercent - startScroll) / 0.4; // Draw over 40% of scroll
+                progress = Math.max(0, Math.min(1, progress));
+                
+                // Ease the progress for smoother animation
+                progress = easeInOutCubic(progress);
+                
+                // Update stroke dash offset
+                path.style.strokeDashoffset = length * (1 - progress);
+            });
+        }
+        
+        function easeInOutCubic(t) {
+            return t < 0.5 
+                ? 4 * t * t * t 
+                : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+        
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize
+        generateInkPaths();
+        window.addEventListener('scroll', updateInkDrawing);
+        updateInkDrawing(); // Initial call
+    </script>
+</body>
+</html>
