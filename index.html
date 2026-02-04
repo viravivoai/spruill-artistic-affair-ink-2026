@@ -922,8 +922,8 @@
 
     <!-- Truchet Maze & Scroll Scripts -->
     <script>
-        // Truchet Tile Maze Generator - Clean loopy style
-        // Based on truchetpatterns.netlify.app approach
+        // Truchet Tile Maze Generator - Loopy style
+        // Exact paths from truchetpatterns.netlify.app
         // Two quarter-circle arcs per tile connecting edge midpoints
         
         function generateTruchetMaze() {
@@ -959,33 +959,26 @@
             }
             
             // Generate Truchet tiles - classic loopy pattern
-            // Each tile has TWO quarter-circle arcs connecting midpoints of adjacent edges
+            // Reference paths from truchetpatterns.netlify.app:
+            // LoopyOne: "m25 50a25 25 0 0 1 25-25m-50 0a25 25 0 0 0 25-25" (bottom→right, left→top)
+            // LoopyTwo: "m25 50a25 25 0 0 0-25-25m50 0a25 25 0 0 1-25-25" (bottom→left, right→top)
+            
             for (let row = 0; row < rows; row++) {
                 for (let col = 0; col < cols; col++) {
                     const x = col * tileSize;
                     const y = row * tileSize;
                     
-                    // Edge midpoints
-                    const top = { x: x + r, y: y };
-                    const bottom = { x: x + r, y: y + tileSize };
-                    const left = { x: x, y: y + r };
-                    const right = { x: x + tileSize, y: y + r };
-                    
                     let d;
                     
                     // Randomly choose one of two orientations
                     if (Math.random() > 0.5) {
-                        // Variant A: connects left-to-top and right-to-bottom
-                        // Arc from bottom midpoint to right midpoint (sweep clockwise)
-                        // Arc from top midpoint to left midpoint (sweep counter-clockwise)
-                        d = `M ${bottom.x} ${bottom.y} A ${r} ${r} 0 0 1 ${right.x} ${right.y} ` +
-                            `M ${top.x} ${top.y} A ${r} ${r} 0 0 0 ${left.x} ${left.y}`;
+                        // LoopyOne: bottom→right arc, left→top arc
+                        d = `M ${x + r} ${y + tileSize} A ${r} ${r} 0 0 1 ${x + tileSize} ${y + r} ` +
+                            `M ${x} ${y + r} A ${r} ${r} 0 0 0 ${x + r} ${y}`;
                     } else {
-                        // Variant B: connects left-to-bottom and right-to-top
-                        // Arc from bottom midpoint to left midpoint (sweep counter-clockwise)
-                        // Arc from top midpoint to right midpoint (sweep clockwise)
-                        d = `M ${bottom.x} ${bottom.y} A ${r} ${r} 0 0 0 ${left.x} ${left.y} ` +
-                            `M ${top.x} ${top.y} A ${r} ${r} 0 0 1 ${right.x} ${right.y}`;
+                        // LoopyTwo: bottom→left arc, right→top arc
+                        d = `M ${x + r} ${y + tileSize} A ${r} ${r} 0 0 0 ${x} ${y + r} ` +
+                            `M ${x + tileSize} ${y + r} A ${r} ${r} 0 0 1 ${x + r} ${y}`;
                     }
                     
                     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
