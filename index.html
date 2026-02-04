@@ -59,10 +59,10 @@
         .ink-path {
             fill: none;
             stroke: var(--ink-black);
-            stroke-width: 3;
+            stroke-width: 4;
             stroke-linecap: round;
             stroke-linejoin: round;
-            opacity: 0.15;
+            opacity: 0.25;
         }
 
         /* Paper texture overlay */
@@ -951,14 +951,22 @@
 
     <!-- Ink Drawing & Scroll Scripts -->
     <script>
-        // Generate random ink paths that meander left-middle-right
+        // Generate random ink paths that meander left-middle-right like Keith Haring patterns
         function generateInkPaths() {
             const svg = document.getElementById('inkSvg');
-            const numPaths = 25; // Number of continuous ink lines
+            const numPaths = 35; // More paths for denser effect
             
+            // Create multiple path groups with different characteristics
             for (let i = 0; i < numPaths; i++) {
                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 path.classList.add('ink-path');
+                
+                // Vary stroke width for depth
+                const strokeWidth = 2 + Math.random() * 4;
+                path.style.strokeWidth = strokeWidth;
+                
+                // Some paths slightly more opaque
+                path.style.opacity = 0.15 + Math.random() * 0.2;
                 
                 // Generate a meandering path
                 const d = generateMeanderingPath(i, numPaths);
@@ -974,64 +982,114 @@
                 
                 // Store length for scroll animation
                 path.dataset.length = length;
-                path.dataset.startScroll = (i / numPaths) * 0.7; // Stagger start times
+                path.dataset.startScroll = (i / numPaths) * 0.6; // Stagger start times
+            }
+            
+            // Add some doodle shapes (circles, squiggles) that appear as you scroll
+            addDoodleShapes(svg);
+        }
+        
+        function addDoodleShapes(svg) {
+            const shapes = 15;
+            for (let i = 0; i < shapes; i++) {
+                const shape = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                shape.classList.add('ink-path');
+                
+                const x = 10 + Math.random() * 80;
+                const y = 50 + (i / shapes) * 850;
+                const size = 3 + Math.random() * 8;
+                
+                // Random shape type
+                const shapeType = Math.random();
+                let d;
+                
+                if (shapeType < 0.3) {
+                    // Spiral/loop
+                    d = `M ${x} ${y} q ${size} ${-size} ${size*2} 0 q ${size} ${size} 0 ${size*2} q ${-size} ${size} ${-size*2} 0 q ${-size} ${-size} 0 ${-size*1.5}`;
+                } else if (shapeType < 0.6) {
+                    // Zigzag
+                    d = `M ${x} ${y} l ${size} ${-size} l ${size} ${size} l ${size} ${-size} l ${size} ${size}`;
+                } else {
+                    // Squiggle
+                    d = `M ${x} ${y} q ${size*2} ${-size*2} ${size*4} 0 q ${size*2} ${size*2} ${size*4} 0`;
+                }
+                
+                shape.setAttribute('d', d);
+                shape.style.strokeWidth = 2 + Math.random() * 3;
+                shape.style.opacity = 0.2 + Math.random() * 0.15;
+                
+                svg.appendChild(shape);
+                const length = shape.getTotalLength();
+                
+                shape.style.strokeDasharray = length;
+                shape.style.strokeDashoffset = length;
+                shape.dataset.length = length;
+                shape.dataset.startScroll = 0.1 + (i / shapes) * 0.7;
             }
         }
         
         function generateMeanderingPath(index, total) {
             const points = [];
-            const segments = 15 + Math.floor(Math.random() * 10);
+            const segments = 12 + Math.floor(Math.random() * 8);
             
-            // Starting position - distribute across the page
-            let x = 10 + (index % 3) * 30 + Math.random() * 20;
-            let y = (index / total) * 100;
+            // Starting position - distribute across the page more evenly
+            const column = index % 5;
+            let x = 5 + column * 18 + Math.random() * 12;
+            let y = (index / total) * 80 - 20;
             
             points.push(`M ${x} ${y}`);
             
-            // Pattern: left, middle, right, middle with variations
-            const directions = ['left', 'middle', 'right', 'middle'];
+            // Pattern: varies between left, middle, right with organic movement
+            const directions = ['left', 'middle', 'right', 'middle', 'left', 'right'];
+            const startDir = Math.floor(Math.random() * 4);
             
             for (let i = 0; i < segments; i++) {
-                const direction = directions[i % 4];
-                const yStep = 50 + Math.random() * 80;
+                const direction = directions[(i + startDir) % directions.length];
+                const yStep = 40 + Math.random() * 70;
                 
-                // Determine x target based on direction
+                // Determine x target based on direction with more variation
                 let targetX;
                 switch(direction) {
                     case 'left':
-                        targetX = 5 + Math.random() * 25;
+                        targetX = 3 + Math.random() * 22;
                         break;
                     case 'right':
-                        targetX = 70 + Math.random() * 25;
+                        targetX = 75 + Math.random() * 22;
                         break;
                     case 'middle':
                     default:
-                        targetX = 35 + Math.random() * 30;
+                        targetX = 30 + Math.random() * 40;
                         break;
                 }
                 
-                // Add some organic curves
-                const cx1 = x + (Math.random() - 0.5) * 30;
-                const cy1 = y + yStep * 0.3 + (Math.random() - 0.5) * 20;
-                const cx2 = targetX + (Math.random() - 0.5) * 30;
-                const cy2 = y + yStep * 0.7 + (Math.random() - 0.5) * 20;
+                // Add organic curves with more variation
+                const curve = Math.random();
+                const cx1 = x + (Math.random() - 0.5) * 35;
+                const cy1 = y + yStep * 0.25 + (Math.random() - 0.5) * 25;
+                const cx2 = targetX + (Math.random() - 0.5) * 35;
+                const cy2 = y + yStep * 0.75 + (Math.random() - 0.5) * 25;
                 
                 y += yStep;
                 x = targetX;
                 
                 // Mix of curve types for organic feel
-                if (Math.random() > 0.3) {
+                if (curve > 0.4) {
                     points.push(`C ${cx1} ${cy1} ${cx2} ${cy2} ${x} ${y}`);
+                } else if (curve > 0.15) {
+                    points.push(`Q ${(cx1+cx2)/2} ${(cy1+cy2)/2} ${x} ${y}`);
                 } else {
-                    points.push(`Q ${cx1} ${cy1} ${x} ${y}`);
+                    // Sharp turn occasionally
+                    points.push(`L ${x} ${y}`);
                 }
                 
-                // Add small doodle segments occasionally
-                if (Math.random() > 0.7) {
-                    const loopX = x + (Math.random() - 0.5) * 15;
-                    const loopY = y + Math.random() * 10;
-                    points.push(`Q ${loopX} ${loopY} ${x + (Math.random() - 0.5) * 5} ${y + 5}`);
-                    y += 5;
+                // Add small doodle segments more often for that hand-drawn feel
+                if (Math.random() > 0.6) {
+                    const loopSize = 3 + Math.random() * 8;
+                    const loopDir = Math.random() > 0.5 ? 1 : -1;
+                    const loopX = x + loopDir * loopSize;
+                    const loopY = y + loopSize * 0.5;
+                    points.push(`q ${loopDir * loopSize * 0.5} ${-loopSize * 0.3} ${loopDir * loopSize} 0`);
+                    points.push(`q ${loopDir * loopSize * 0.5} ${loopSize * 0.3} 0 ${loopSize * 0.5}`);
                 }
             }
             
