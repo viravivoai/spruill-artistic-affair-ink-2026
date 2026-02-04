@@ -1012,11 +1012,10 @@
         </div>
     </footer>
 
-    <!-- Truchet Maze & Scroll Scripts -->
+    <!-- Truchet Maze Scripts -->
     <script>
-        // Truchet Tile Maze Generator - Loopy style
-        // Exact paths from truchetpatterns.netlify.app
-        // Two quarter-circle arcs per tile connecting edge midpoints
+        // Truchet Tile Maze Generator - Loopy style with random time-based animation
+        // Each tile animates independently from 5% to 100% over 5-15 seconds
         
         function generateTruchetMaze() {
             const svg = document.getElementById('mazeSvg');
@@ -1040,21 +1039,9 @@
             // Clear existing paths
             svg.innerHTML = '';
             
-            // Create groups for different scroll reveal timing
-            const numGroups = 10;
-            const groups = [];
-            for (let i = 0; i < numGroups; i++) {
-                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                g.dataset.group = i;
-                groups.push(g);
-                svg.appendChild(g);
-            }
+            const paths = [];
             
             // Generate Truchet tiles - classic loopy pattern
-            // Reference paths from truchetpatterns.netlify.app:
-            // LoopyOne: "m25 50a25 25 0 0 1 25-25m-50 0a25 25 0 0 0 25-25" (bottom→right, left→top)
-            // LoopyTwo: "m25 50a25 25 0 0 0-25-25m50 0a25 25 0 0 1-25-25" (bottom→left, right→top)
-            
             for (let row = 0; row < rows; row++) {
                 for (let col = 0; col < cols; col++) {
                     const x = col * tileSize;
@@ -1076,89 +1063,75 @@
                     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                     path.classList.add('maze-path');
                     path.setAttribute('d', d);
-                    
-                    // Assign to group based on position for staggered reveal
-                    const groupIndex = Math.floor((row / rows) * numGroups);
-                    groups[Math.min(groupIndex, numGroups - 1)].appendChild(path);
+                    svg.appendChild(path);
                     
                     // Get path length and set up dash animation
                     const length = path.getTotalLength();
                     path.style.strokeDasharray = length;
-                    path.style.strokeDashoffset = length;
-                    path.dataset.length = length;
-                }
-            }
-        }
-        
-        // Track current drawing progress (0 to 1)
-        let currentProgress = 0;
-        let initialAnimationComplete = false;
-        
-        function updateMazeDrawing(targetProgress) {
-            const svg = document.getElementById('mazeSvg');
-            const groups = svg.querySelectorAll('g');
-            
-            groups.forEach((group, index) => {
-                const paths = group.querySelectorAll('.maze-path');
-                const groupStart = index / groups.length * 0.5;
-                const groupEnd = groupStart + 0.4;
-                
-                paths.forEach(path => {
-                    const length = parseFloat(path.dataset.length);
                     
-                    // Calculate progress for this group
-                    let progress = (targetProgress - groupStart) / (groupEnd - groupStart);
-                    progress = Math.max(0, Math.min(1, progress));
-                    progress = easeInOutCubic(progress);
+                    // Start at 5% drawn
+                    const startProgress = 0.05;
+                    path.style.strokeDashoffset = length * (1 - startProgress);
                     
-                    path.style.strokeDashoffset = length * (1 - progress);
-                });
-            });
-        }
-        
-        function animateToProgress(target, duration) {
-            const start = currentProgress;
-            const startTime = performance.now();
-            
-            function animate(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                
-                currentProgress = start + (target - start) * easeInOutCubic(progress);
-                updateMazeDrawing(currentProgress);
-                
-                if (progress < 1) {
-                    requestAnimationFrame(animate);
-                } else {
-                    currentProgress = target;
-                    initialAnimationComplete = true;
+                    // Random duration between 5-15 seconds
+                    const duration = 5000 + Math.random() * 10000;
+                    
+                    // Store animation data
+                    paths.push({
+                        element: path,
+                        length: length,
+                        startProgress: startProgress,
+                        duration: duration,
+                        startTime: performance.now() + Math.random() * 1000 // Stagger start slightly
+                    });
                 }
             }
             
-            requestAnimationFrame(animate);
-        }
-        
-        function handleScroll() {
-            if (!initialAnimationComplete) return;
-            
-            const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-            // Map scroll to drawing progress MUCH more slowly
-            // Power > 1 means drawing lags behind scroll (need to scroll more to progress)
-            // 2.5 means you need to scroll ~63% to reach 50% drawing
-            const slowedScroll = Math.pow(scrollPercent, 2.5);
-            const targetProgress = 0.1 + slowedScroll * 0.9;
-            
-            // Only update if scrolling would increase progress
-            if (targetProgress > currentProgress) {
-                currentProgress = targetProgress;
-                updateMazeDrawing(currentProgress);
-            }
+            // Start the animation loop
+            animatePaths(paths);
         }
         
         function easeInOutCubic(t) {
             return t < 0.5 
                 ? 4 * t * t * t 
                 : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+        
+        function animatePaths(paths) {
+            let allComplete = true;
+            const now = performance.now();
+            
+            paths.forEach(pathData => {
+                const elapsed = now - pathData.startTime;
+                
+                if (elapsed < 0) {
+                    // Haven't started yet
+                    allComplete = false;
+                    return;
+                }
+                
+                if (elapsed >= pathData.duration) {
+                    // Animation complete - set to 100%
+                    pathData.element.style.strokeDashoffset = 0;
+                    return;
+                }
+                
+                allComplete = false;
+                
+                // Calculate progress (0 to 1)
+                const t = elapsed / pathData.duration;
+                const easedT = easeInOutCubic(t);
+                
+                // Interpolate from startProgress (5%) to 1 (100%)
+                const progress = pathData.startProgress + (1 - pathData.startProgress) * easedT;
+                
+                // Update the stroke dash offset
+                pathData.element.style.strokeDashoffset = pathData.length * (1 - progress);
+            });
+            
+            if (!allComplete) {
+                requestAnimationFrame(() => animatePaths(paths));
+            }
         }
 
         // Scroll reveal animation for content
@@ -1195,17 +1168,13 @@
 
         // Initialize
         generateTruchetMaze();
-        window.addEventListener('scroll', handleScroll);
-        window.addEventListener('resize', () => {
-            generateTruchetMaze();
-            updateMazeDrawing(currentProgress);
-        });
         
-        // Start with empty, then animate to 10% over 1.5 seconds
-        updateMazeDrawing(0);
-        setTimeout(() => {
-            animateToProgress(0.1, 1500);
-        }, 100);
+        // Regenerate on resize (debounced)
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(generateTruchetMaze, 250);
+        });
     </script>
 </body>
 </html>
