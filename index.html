@@ -78,6 +78,81 @@
             z-index: 1;
         }
 
+        /* Floating Polaroid Photos */
+        .parallax-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            overflow: hidden;
+        }
+
+        .parallax-photo {
+            position: absolute;
+            background: #f5f5f5;
+            padding: 10px 10px 40px 10px;
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.3),
+                0 10px 40px rgba(0, 0, 0, 0.2);
+            opacity: 0.95;
+        }
+
+        .parallax-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .photo-right-1 {
+            width: 240px;
+            height: 180px;
+            right: -20px;
+            top: 15%;
+            transform: rotate(6deg);
+        }
+
+        .photo-right-2 {
+            width: 220px;
+            height: 275px;
+            right: 40px;
+            top: 45%;
+            transform: rotate(-4deg);
+        }
+
+        .photo-right-3 {
+            width: 250px;
+            height: 188px;
+            right: -10px;
+            top: 75%;
+            transform: rotate(8deg);
+        }
+
+        .photo-left-1 {
+            width: 230px;
+            height: 173px;
+            left: -15px;
+            top: 25%;
+            transform: rotate(-7deg);
+        }
+
+        .photo-left-2 {
+            width: 210px;
+            height: 262px;
+            left: 30px;
+            top: 55%;
+            transform: rotate(5deg);
+        }
+
+        @media (max-width: 1200px) {
+            .parallax-container {
+                display: none;
+            }
+        }
+
         /* Navigation */
         nav {
             position: fixed;
@@ -178,12 +253,16 @@
             }
         }
 
-        .hero-logo {
-            max-width: 500px;
-            width: 90%;
-            height: auto;
+        .hero-banner {
             margin-bottom: 2rem;
-            filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.1));
+        }
+
+        .event-banner {
+            max-width: 100%;
+            width: 650px;
+            height: auto;
+            border: 5px solid var(--ink-black);
+            box-shadow: 8px 8px 0 var(--ink-black);
         }
 
         .hero .date-box {
@@ -255,6 +334,34 @@
             font-size: 1.1rem;
             color: var(--ink-red);
             transform: rotate(-2deg);
+        }
+
+        /* Slang Ticker */
+        .slang-ticker {
+            background: var(--ink-black);
+            padding: 1rem 0;
+            overflow: hidden;
+            position: relative;
+            z-index: 20;
+        }
+
+        .ticker-content {
+            display: flex;
+            animation: ticker 25s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .ticker-item {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.5rem;
+            color: var(--paper-cream);
+            padding: 0 2.5rem;
+            letter-spacing: 3px;
         }
 
         /* Section Titles */
@@ -332,20 +439,6 @@
             font-size: 1rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-        }
-
-        /* Ink Divider */
-        .ink-divider {
-            width: 100%;
-            height: 60px;
-            position: relative;
-            z-index: 20;
-            overflow: hidden;
-        }
-
-        .ink-divider svg {
-            width: 100%;
-            height: 100%;
         }
 
         /* Activities Section */
@@ -548,10 +641,9 @@
         }
 
         .footer-logo {
-            height: 80px;
+            height: 100px;
             width: auto;
             margin-bottom: 1.5rem;
-            filter: brightness(0) invert(1);
         }
 
         .footer-title {
@@ -622,10 +714,6 @@
             .hero {
                 padding-top: 100px;
             }
-
-            .hero-logo {
-                width: 85%;
-            }
         }
 
         /* Color accent classes */
@@ -647,6 +735,25 @@
 
     <div class="paper-texture"></div>
 
+    <!-- Parallax Floating Photos -->
+    <div class="parallax-container">
+        <div class="parallax-photo photo-right-1" data-speed="0.04">
+            <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/lpi_6HkPEitsJr.jpg" alt="Event Photo">
+        </div>
+        <div class="parallax-photo photo-right-2" data-speed="0.05">
+            <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/lpi_D8dfIFUGND.jpg" alt="Event Photo">
+        </div>
+        <div class="parallax-photo photo-right-3" data-speed="0.06">
+            <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/lpi_HWqWeOHAim.jpg" alt="Event Photo">
+        </div>
+        <div class="parallax-photo photo-left-1" data-speed="0.045">
+            <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/lpi_GTq7hdIl4e.jpg" alt="Event Photo">
+        </div>
+        <div class="parallax-photo photo-left-2" data-speed="0.055">
+            <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/lpi_KD1XsQIpVx.jpg" alt="Event Photo">
+        </div>
+    </div>
+
     <!-- Navigation -->
     <nav>
         <a href="https://www.spruillarts.org/" target="_blank" class="nav-logo">
@@ -664,14 +771,16 @@
     <section class="section hero">
         <div class="main-content">
             <div class="hero-content">
-                <img src="images/spruill-ink-logo.png" alt="Spruill Center for the Arts - Artistic Affair 2026" class="hero-logo">
+                <div class="hero-banner">
+                    <img src="https://www.spruillarts.org/wp-content/uploads/2026/01/Spruill-2026-Artistic-Affair-2026-social-1.91to1-1024x537.jpg" alt="Artistic Affair 2026 - 80s Theme" class="event-banner">
+                </div>
                 
                 <div class="date-box">
                     <span class="date">Saturday, March 28th, 2026</span>
                     <div class="time">5:30pm - 9:00pm</div>
                 </div>
                 
-                <p class="tagline">An evening of art, community & creativity!</p>
+                <p class="tagline">Dust off your cassettes and tease your hair — be there or be square!</p>
                 
                 <div style="margin-top: 2.5rem;">
                     <a href="https://wedoauctions.com/app/public/bidapp/spruillarts/tickets/Artistic_Affair?p=individual" class="cta-button" target="_blank">
@@ -689,12 +798,22 @@
         </div>
     </section>
 
-    <!-- Ink Divider -->
-    <div class="ink-divider">
-        <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
-            <path d="M0,30 Q100,10 200,30 T400,30 T600,30 T800,30 T1000,30 T1200,30" stroke="#1a1a1a" stroke-width="3" fill="none"/>
-            <path d="M0,40 Q150,60 300,40 T600,40 T900,40 T1200,40" stroke="#1a1a1a" stroke-width="2" fill="none" opacity="0.5"/>
-        </svg>
+    <!-- Slang Ticker -->
+    <div class="slang-ticker">
+        <div class="ticker-content">
+            <span class="ticker-item">★ TOTALLY TUBULAR ★</span>
+            <span class="ticker-item">★ RAD ★</span>
+            <span class="ticker-item">★ GAG ME WITH A SPOON ★</span>
+            <span class="ticker-item">★ GNARLY ★</span>
+            <span class="ticker-item">★ BODACIOUS ★</span>
+            <span class="ticker-item">★ GRODY TO THE MAX ★</span>
+            <span class="ticker-item">★ TOTALLY TUBULAR ★</span>
+            <span class="ticker-item">★ RAD ★</span>
+            <span class="ticker-item">★ GAG ME WITH A SPOON ★</span>
+            <span class="ticker-item">★ GNARLY ★</span>
+            <span class="ticker-item">★ BODACIOUS ★</span>
+            <span class="ticker-item">★ GRODY TO THE MAX ★</span>
+        </div>
     </div>
 
     <!-- About Section -->
@@ -709,11 +828,11 @@
                 </p>
                 
                 <p>
-                    Welcome to the <span class="highlight">40th Annual Artistic Affair</span> — a celebration of creativity, community, and the transformative power of art! Join us for an unforgettable evening inspired by the bold, expressive energy of ink art and street murals.
+                    This year's <span class="highlight">40th Annual Artistic Affair</span> builds on the electric energy of last year's 70s celebration, fast-forwarding a decade into full-on <span class="highlight">1980s fun!</span> Get ready to bust a move, scramble the Cube, and relive your Atari days.
                 </p>
                 
                 <p>
-                    Bid on amazing items in our live and silent auctions featuring artwork from students, instructors, and local artists! Enjoy music, participate in costume contests, enter raffles, and so much more as we raise funds for arts education in our community.
+                    Bid on totally tubular items in our live and silent auctions featuring artwork from students, instructors, and local artists! Revel in the righteous 80s hits spun by our rad DJ and join in our solo and group costume contests, raffles, and much more as we raise funds for arts education in our community.
                 </p>
             </div>
             
@@ -737,51 +856,51 @@
     <!-- Activities Section -->
     <section id="activities" class="section">
         <div class="main-content">
-            <h2 class="section-title scroll-reveal">Activities & Fun</h2>
+            <h2 class="section-title scroll-reveal">Totally Rad Activities</h2>
             
             <div class="activities-grid">
                 <div class="activity-card scroll-reveal">
-                    <h3>🎨 Live Art Demos</h3>
-                    <p>Watch talented artists create stunning works right before your eyes. Get inspired and maybe even try your hand!</p>
+                    <h3>🕺 Breakdancing & Electric Slide</h3>
+                    <p>Hit the dance floor for group electric slides, dirty dancing moves, and breakdancing battles. Show off your best 80s moves!</p>
                 </div>
                 
                 <div class="activity-card scroll-reveal">
-                    <h3>🖼️ Silent Auction</h3>
-                    <p>Bid on unique pieces from local artists, students, and instructors. Take home something special!</p>
+                    <h3>✨ Neon & Glowsticks</h3>
+                    <p>Light up the night with neon everything! Glowsticks, blacklights, and all the fluorescent fun you can handle.</p>
                 </div>
                 
                 <div class="activity-card scroll-reveal">
-                    <h3>🎭 Costume Contest</h3>
-                    <p>Show off your creative side! Solo and group categories with prizes for the most artistic looks.</p>
+                    <h3>🧸 Care Bears & Cabbage Patch</h3>
+                    <p>Relive your childhood with nostalgic displays of your favorite 80s toys and collectibles.</p>
                 </div>
                 
                 <div class="activity-card scroll-reveal">
-                    <h3>🎶 Live Music & DJ</h3>
-                    <p>Dance the night away with great tunes and an energetic atmosphere!</p>
+                    <h3>📻 Boombox & VHS Vibes</h3>
+                    <p>Boomboxes pumping hits, VCR displays, and all the analog aesthetics that made the 80s unforgettable.</p>
                 </div>
                 
                 <div class="activity-card scroll-reveal">
-                    <h3>🎟️ Raffles & Prizes</h3>
-                    <p>Enter for your chance to win amazing prizes throughout the evening!</p>
+                    <h3>🎲 Trivial Pursuit Raffle</h3>
+                    <p>Audience picks the category, 2 buzzers to chime in! Loser gets a consolation prize like Mister Potato Head or Pop Rocks.</p>
                 </div>
                 
                 <div class="activity-card scroll-reveal">
-                    <h3>📸 Photo Booth</h3>
-                    <p>Capture memories with fun props and a creative backdrop!</p>
+                    <h3>💇 Big Hair & Makeup Booth</h3>
+                    <p>Get your classic 80s makeover! Side ponytails with scrunchies, electric eye shadow in bright blue, purple, and neon pink.</p>
                     <ul>
-                        <li>Props galore</li>
-                        <li>Instant prints</li>
-                        <li>Social media sharing</li>
+                        <li>Hair crimpers & scrunchies</li>
+                        <li>Electric eye shadow application</li>
+                        <li>Photo opportunity station</li>
                     </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Mural Section -->
+    <!-- Keith Haring Mural Section -->
     <section class="section">
         <div class="main-content">
-            <h2 class="section-title scroll-reveal">Collaborative Mural</h2>
+            <h2 class="section-title scroll-reveal">The Keith Haring Collaborative Mural</h2>
             
             <div class="mural-content scroll-reveal">
                 <div class="haring-figures">
@@ -791,17 +910,17 @@
                 </div>
                 
                 <div class="mural-text content-box">
-                    <h3>The Inspiration</h3>
-                    <p>Bold lines, dynamic figures, and expressive movement — inspired by the iconic street art that transformed pop culture.</p>
+                    <h3>The 80s Vibe</h3>
+                    <p>Keith Haring was one of the decade's most recognizable artists, known for his bold, dynamic figures and simple lines that turned pop and street art into high art.</p>
                     
                     <h3>The Activation</h3>
-                    <p>A large canvas awaits your contribution. We'll start with signature figures to set the tone, then it's your turn!</p>
+                    <p>A large roll of butcher paper or blank canvas on a wall. We'll start with Haring's signature "Radiant Baby" or "Barking Dog" figures to set the tone.</p>
                     
                     <h3>The Challenge</h3>
-                    <p>Grab a marker and add your own simple, active figures. Fill the gaps and make your mark!</p>
+                    <p>Thick, black Sharpie markers and neon/bright-colored paint pens. Draw your own simple, active figures and fill the gaps!</p>
                     
                     <h3 class="accent-red">Fundraising Tie-in</h3>
-                    <p>At the end of the night, the mural will be cut into squares and sold as unique, collaborative art pieces!</p>
+                    <p>At the end of the night, the mural can be cut into smaller squares to be sold as unique, collaborative art pieces!</p>
                 </div>
             </div>
         </div>
@@ -814,7 +933,7 @@
             
             <div class="cocktail-card scroll-reveal">
                 <h3 class="cocktail-name">The Dunwoody Vice</h3>
-                <p class="cocktail-subtitle">Fruity, sweet, and totally delicious</p>
+                <p class="cocktail-subtitle">A reference to Miami Vice — fruity, sweet, and totally 80s</p>
                 
                 <div class="cocktail-ingredients">
                     <p><strong>Ingredients:</strong></p>
@@ -832,7 +951,7 @@
     <!-- Sponsors Section -->
     <section id="sponsors" class="section">
         <div class="main-content">
-            <h2 class="section-title scroll-reveal">Our Sponsors</h2>
+            <h2 class="section-title scroll-reveal">Our Radical Sponsors</h2>
             
             <div class="sponsor-tier scroll-reveal">
                 <p class="tier-title">Presenting Sponsors</p>
@@ -884,7 +1003,7 @@
     <!-- Hosts Section -->
     <section class="section">
         <div class="main-content" style="text-align: center;">
-            <h2 class="section-title scroll-reveal">2026 Hosts</h2>
+            <h2 class="section-title scroll-reveal">Our Amazing 2026 Hosts</h2>
             
             <div class="hosts-list scroll-reveal content-box">
                 Anonymous Supporter • Jan & Olen Akers • Dawn Brost • Leslie & Frank Cannon • Laura Cooper • James (Jim) & Corrine Cramer • Marie Crean • Steve & Jane Dolinger • Su & Richard Ellis • Fran & Jim Fuchs • Paul & Julie Hagedorn • Carlton Hardee • Susan & Richard Jakubecy • Terry & Alan Kemp • Kay Loerch • Amy & Dan McMorrow • Fran & Mary Millar • Irv & Libba Morris • Jill Morrisey • Joyce Neimann • Rob & Nancy Ortner • Cindy & Tom Pietkiewicz • Beth & Bob Saxe • Christine Self • Tracy Simmons • Leslie & Mike Sivewright • Camille & Mike Toppo • Pat Troxel • Kathy Walton • Pam Wetzel
@@ -901,7 +1020,7 @@
     <!-- Donate Section -->
     <section class="section">
         <div class="main-content" style="text-align: center;">
-            <h2 class="section-title scroll-reveal">Donate to the Auction</h2>
+            <h2 class="section-title scroll-reveal">Donate to the Silent Auction</h2>
             
             <div class="content-box scroll-reveal">
                 <p>
@@ -951,41 +1070,46 @@
 
     <!-- Ink Drawing & Scroll Scripts -->
     <script>
+        // Parallax for floating photos
+        const parallaxPhotos = document.querySelectorAll('.parallax-photo');
+        
+        function updateParallax() {
+            const scrolled = window.pageYOffset;
+            parallaxPhotos.forEach(photo => {
+                const speed = parseFloat(photo.dataset.speed) || 0.05;
+                const yPos = scrolled * speed;
+                const currentTransform = photo.style.transform.match(/rotate\([^)]+\)/)?.[0] || '';
+                photo.style.transform = `translateY(${yPos}px) ${currentTransform}`;
+            });
+        }
+        
+        window.addEventListener('scroll', updateParallax);
+
         // Generate random ink paths that meander left-middle-right like Keith Haring patterns
         function generateInkPaths() {
             const svg = document.getElementById('inkSvg');
-            const numPaths = 35; // More paths for denser effect
+            const numPaths = 35;
             
-            // Create multiple path groups with different characteristics
             for (let i = 0; i < numPaths; i++) {
                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 path.classList.add('ink-path');
                 
-                // Vary stroke width for depth
                 const strokeWidth = 2 + Math.random() * 4;
                 path.style.strokeWidth = strokeWidth;
-                
-                // Some paths slightly more opaque
                 path.style.opacity = 0.15 + Math.random() * 0.2;
                 
-                // Generate a meandering path
                 const d = generateMeanderingPath(i, numPaths);
                 path.setAttribute('d', d);
                 
-                // Calculate path length for animation
                 svg.appendChild(path);
                 const length = path.getTotalLength();
                 
-                // Set up stroke dash for drawing animation
                 path.style.strokeDasharray = length;
                 path.style.strokeDashoffset = length;
-                
-                // Store length for scroll animation
                 path.dataset.length = length;
-                path.dataset.startScroll = (i / numPaths) * 0.6; // Stagger start times
+                path.dataset.startScroll = (i / numPaths) * 0.6;
             }
             
-            // Add some doodle shapes (circles, squiggles) that appear as you scroll
             addDoodleShapes(svg);
         }
         
@@ -999,18 +1123,14 @@
                 const y = 50 + (i / shapes) * 850;
                 const size = 3 + Math.random() * 8;
                 
-                // Random shape type
                 const shapeType = Math.random();
                 let d;
                 
                 if (shapeType < 0.3) {
-                    // Spiral/loop
                     d = `M ${x} ${y} q ${size} ${-size} ${size*2} 0 q ${size} ${size} 0 ${size*2} q ${-size} ${size} ${-size*2} 0 q ${-size} ${-size} 0 ${-size*1.5}`;
                 } else if (shapeType < 0.6) {
-                    // Zigzag
                     d = `M ${x} ${y} l ${size} ${-size} l ${size} ${size} l ${size} ${-size} l ${size} ${size}`;
                 } else {
-                    // Squiggle
                     d = `M ${x} ${y} q ${size*2} ${-size*2} ${size*4} 0 q ${size*2} ${size*2} ${size*4} 0`;
                 }
                 
@@ -1032,14 +1152,12 @@
             const points = [];
             const segments = 12 + Math.floor(Math.random() * 8);
             
-            // Starting position - distribute across the page more evenly
             const column = index % 5;
             let x = 5 + column * 18 + Math.random() * 12;
             let y = (index / total) * 80 - 20;
             
             points.push(`M ${x} ${y}`);
             
-            // Pattern: varies between left, middle, right with organic movement
             const directions = ['left', 'middle', 'right', 'middle', 'left', 'right'];
             const startDir = Math.floor(Math.random() * 4);
             
@@ -1047,7 +1165,6 @@
                 const direction = directions[(i + startDir) % directions.length];
                 const yStep = 40 + Math.random() * 70;
                 
-                // Determine x target based on direction with more variation
                 let targetX;
                 switch(direction) {
                     case 'left':
@@ -1062,7 +1179,6 @@
                         break;
                 }
                 
-                // Add organic curves with more variation
                 const curve = Math.random();
                 const cx1 = x + (Math.random() - 0.5) * 35;
                 const cy1 = y + yStep * 0.25 + (Math.random() - 0.5) * 25;
@@ -1072,22 +1188,17 @@
                 y += yStep;
                 x = targetX;
                 
-                // Mix of curve types for organic feel
                 if (curve > 0.4) {
                     points.push(`C ${cx1} ${cy1} ${cx2} ${cy2} ${x} ${y}`);
                 } else if (curve > 0.15) {
                     points.push(`Q ${(cx1+cx2)/2} ${(cy1+cy2)/2} ${x} ${y}`);
                 } else {
-                    // Sharp turn occasionally
                     points.push(`L ${x} ${y}`);
                 }
                 
-                // Add small doodle segments more often for that hand-drawn feel
                 if (Math.random() > 0.6) {
                     const loopSize = 3 + Math.random() * 8;
                     const loopDir = Math.random() > 0.5 ? 1 : -1;
-                    const loopX = x + loopDir * loopSize;
-                    const loopY = y + loopSize * 0.5;
                     points.push(`q ${loopDir * loopSize * 0.5} ${-loopSize * 0.3} ${loopDir * loopSize} 0`);
                     points.push(`q ${loopDir * loopSize * 0.5} ${loopSize * 0.3} 0 ${loopSize * 0.5}`);
                 }
@@ -1096,7 +1207,6 @@
             return points.join(' ');
         }
         
-        // Scroll-based path drawing animation
         function updateInkDrawing() {
             const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
             const paths = document.querySelectorAll('.ink-path');
@@ -1105,14 +1215,10 @@
                 const length = parseFloat(path.dataset.length);
                 const startScroll = parseFloat(path.dataset.startScroll);
                 
-                // Calculate draw progress based on scroll position
-                let progress = (scrollPercent - startScroll) / 0.4; // Draw over 40% of scroll
+                let progress = (scrollPercent - startScroll) / 0.4;
                 progress = Math.max(0, Math.min(1, progress));
-                
-                // Ease the progress for smoother animation
                 progress = easeInOutCubic(progress);
                 
-                // Update stroke dash offset
                 path.style.strokeDashoffset = length * (1 - progress);
             });
         }
@@ -1122,7 +1228,7 @@
                 ? 4 * t * t * t 
                 : 1 - Math.pow(-2 * t + 2, 3) / 2;
         }
-        
+
         // Scroll reveal animation
         const observerOptions = {
             threshold: 0.1,
@@ -1158,7 +1264,8 @@
         // Initialize
         generateInkPaths();
         window.addEventListener('scroll', updateInkDrawing);
-        updateInkDrawing(); // Initial call
+        updateInkDrawing();
+        updateParallax();
     </script>
 </body>
 </html>
