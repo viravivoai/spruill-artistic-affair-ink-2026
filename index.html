@@ -86,26 +86,10 @@
             z-index: 1000;
             padding: 1rem 2rem;
             background: rgba(250, 247, 240, 0.95);
-            border-bottom: 3px solid var(--ink-black);
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             backdrop-filter: blur(10px);
-        }
-
-        .nav-logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .spruill-logo {
-            height: 70px;
-            width: auto;
-            transition: all 0.3s;
-        }
-
-        .spruill-logo:hover {
-            transform: scale(1.05);
         }
 
         .nav-links {
@@ -628,9 +612,6 @@
 
     <!-- Navigation -->
     <nav>
-        <a href="https://www.spruillarts.org/" target="_blank" class="nav-logo">
-            <img src="images/spruill-ink-logo-transparent.png" alt="Spruill Center for the Arts" class="spruill-logo">
-        </a>
         <ul class="nav-links">
             <li><a href="#about">About</a></li>
             <li><a href="#activities">Activities</a></li>
@@ -998,14 +979,13 @@
             }
         }
         
-        function updateMazeDrawing() {
-            const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+        // Track current drawing progress (0 to 1)
+        let currentProgress = 0;
+        let initialAnimationComplete = false;
+        
+        function updateMazeDrawing(targetProgress) {
             const svg = document.getElementById('mazeSvg');
             const groups = svg.querySelectorAll('g');
-            
-            // Start drawing after 10% scroll (delay the start)
-            const scrollStart = 0.08;
-            const adjustedScroll = Math.max(0, (scrollPercent - scrollStart) / (1 - scrollStart));
             
             groups.forEach((group, index) => {
                 const paths = group.querySelectorAll('.maze-path');
@@ -1016,13 +996,49 @@
                     const length = parseFloat(path.dataset.length);
                     
                     // Calculate progress for this group
-                    let progress = (adjustedScroll - groupStart) / (groupEnd - groupStart);
+                    let progress = (targetProgress - groupStart) / (groupEnd - groupStart);
                     progress = Math.max(0, Math.min(1, progress));
                     progress = easeInOutCubic(progress);
                     
                     path.style.strokeDashoffset = length * (1 - progress);
                 });
             });
+        }
+        
+        function animateToProgress(target, duration) {
+            const start = currentProgress;
+            const startTime = performance.now();
+            
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                currentProgress = start + (target - start) * easeInOutCubic(progress);
+                updateMazeDrawing(currentProgress);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    currentProgress = target;
+                    initialAnimationComplete = true;
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        function handleScroll() {
+            if (!initialAnimationComplete) return;
+            
+            const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+            // Map scroll (0-100%) to drawing progress (10%-100%)
+            const targetProgress = 0.1 + scrollPercent * 0.9;
+            
+            // Only update if scrolling would increase progress
+            if (targetProgress > currentProgress) {
+                currentProgress = targetProgress;
+                updateMazeDrawing(currentProgress);
+            }
         }
         
         function easeInOutCubic(t) {
@@ -1065,12 +1081,17 @@
 
         // Initialize
         generateTruchetMaze();
-        window.addEventListener('scroll', updateMazeDrawing);
+        window.addEventListener('scroll', handleScroll);
         window.addEventListener('resize', () => {
             generateTruchetMaze();
-            updateMazeDrawing();
+            updateMazeDrawing(currentProgress);
         });
-        updateMazeDrawing();
+        
+        // Start with empty, then animate to 10% over 1.5 seconds
+        updateMazeDrawing(0);
+        setTimeout(() => {
+            animateToProgress(0.1, 1500);
+        }, 100);
     </script>
 </body>
 </html>
