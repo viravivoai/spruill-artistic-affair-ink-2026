@@ -618,22 +618,22 @@
 
         .polaroid {
             background: white;
-            padding: 0.8rem 0.8rem 2.5rem 0.8rem;
+            padding: 0.6rem 0.6rem 2rem 0.6rem;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
             border: 1px solid #e0e0e0;
             transition: transform 0.3s, box-shadow 0.3s;
-            max-width: 200px;
+            width: 160px;
         }
 
         .polaroid:hover {
-            transform: scale(1.05) rotate(0deg) !important;
+            transform: scale(1.1) rotate(0deg) !important;
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
             z-index: 10;
         }
 
         .polaroid img {
             width: 100%;
-            height: 150px;
+            height: 140px;
             object-fit: cover;
             display: block;
         }
@@ -754,35 +754,35 @@
                 
                 <div class="polaroid-gallery" style="margin-top: 1.5rem;">
                     <div class="polaroid scroll-reveal">
-                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_0_ILrmD2jLYf.jpg" alt="Artistic Affair 2025">
+                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=300&h=300&fit=crop" alt="Artistic Affair 2025">
                         <div class="polaroid-caption">Opening Night!</div>
                     </div>
                     <div class="polaroid scroll-reveal">
-                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_1_H3UHTLnctK.jpg" alt="Artistic Affair 2025">
+                        <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=300&h=300&fit=crop" alt="Artistic Affair 2025">
                         <div class="polaroid-caption">Art & Friends</div>
                     </div>
                     <div class="polaroid scroll-reveal">
-                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_2_cRpYtKPrEN.jpg" alt="Artistic Affair 2025">
+                        <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=300&h=300&fit=crop" alt="Artistic Affair 2025">
                         <div class="polaroid-caption">Creative Crowd</div>
                     </div>
                     <div class="polaroid scroll-reveal">
-                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_3_qQLSWIWUP2.jpg" alt="Artistic Affair 2025">
+                        <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=300&h=300&fit=crop" alt="Artistic Affair 2025">
                         <div class="polaroid-caption">Auction Fun</div>
                     </div>
                     <div class="polaroid scroll-reveal">
-                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_4_17nLYSVCAi.jpg" alt="Artistic Affair 2025">
+                        <img src="https://images.unsplash.com/photo-1528495612343-9ca9f4a4de28?w=300&h=300&fit=crop" alt="Artistic Affair 2025">
                         <div class="polaroid-caption">Party Time!</div>
                     </div>
                     <div class="polaroid scroll-reveal">
-                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_5_Eq2yp7ZQ4G.jpg" alt="Artistic Affair 2025">
+                        <img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=300&h=300&fit=crop" alt="Artistic Affair 2025">
                         <div class="polaroid-caption">Celebrating Art</div>
                     </div>
                     <div class="polaroid scroll-reveal">
-                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_6_wbqt45Hv8D.jpg" alt="Artistic Affair 2025">
+                        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&h=300&fit=crop" alt="Artistic Affair 2025">
                         <div class="polaroid-caption">Great Vibes</div>
                     </div>
                     <div class="polaroid scroll-reveal">
-                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_7_h3cLIoQxJD.jpg" alt="Artistic Affair 2025">
+                        <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=300&h=300&fit=crop" alt="Artistic Affair 2025">
                         <div class="polaroid-caption">Community Love</div>
                     </div>
                 </div>
@@ -1142,9 +1142,10 @@
             if (!initialAnimationComplete) return;
             
             const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-            // Map scroll to drawing progress more slowly
-            // Use a slower curve - need to scroll ~70% to complete drawing
-            const slowedScroll = Math.pow(scrollPercent, 0.6); // Slower progression
+            // Map scroll to drawing progress MUCH more slowly
+            // Power > 1 means drawing lags behind scroll (need to scroll more to progress)
+            // 2.5 means you need to scroll ~63% to reach 50% drawing
+            const slowedScroll = Math.pow(scrollPercent, 2.5);
             const targetProgress = 0.1 + slowedScroll * 0.9;
             
             // Only update if scrolling would increase progress
