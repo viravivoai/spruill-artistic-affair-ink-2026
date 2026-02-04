@@ -62,7 +62,7 @@
             stroke-width: 12;
             stroke-linecap: round;
             stroke-linejoin: round;
-            opacity: 0.4;
+            opacity: 1;
         }
 
         /* Paper texture overlay */
@@ -956,26 +956,53 @@
                 svg.appendChild(g);
             }
             
-            // Generate classic Truchet tiles - clean quarter-circle arcs
+            // Generate Truchet tiles with variety: quarter circles, full circles, half circles
             for (let row = 0; row < rows; row++) {
                 for (let col = 0; col < cols; col++) {
                     const x = col * tileSize;
                     const y = row * tileSize;
                     const r = tileSize / 2;
+                    const cx = x + r; // center x
+                    const cy = y + r; // center y
                     
-                    // Randomly choose tile type
-                    const type = Math.random() > 0.5 ? 'A' : 'B';
+                    // Randomly choose shape type
+                    const shapeType = Math.random();
                     
-                    // Create clean quarter-circle arcs (classic Truchet)
                     let d;
-                    if (type === 'A') {
-                        // Top-left corner arc + Bottom-right corner arc
-                        d = `M ${x} ${y + r} A ${r} ${r} 0 0 1 ${x + r} ${y} ` +
-                            `M ${x + tileSize} ${y + r} A ${r} ${r} 0 0 1 ${x + r} ${y + tileSize}`;
+                    if (shapeType < 0.5) {
+                        // Quarter circles (classic Truchet) - 50% chance
+                        const variant = Math.random() > 0.5 ? 'A' : 'B';
+                        if (variant === 'A') {
+                            // Top-left corner arc + Bottom-right corner arc
+                            d = `M ${x} ${y + r} A ${r} ${r} 0 0 1 ${x + r} ${y} ` +
+                                `M ${x + tileSize} ${y + r} A ${r} ${r} 0 0 1 ${x + r} ${y + tileSize}`;
+                        } else {
+                            // Top-right corner arc + Bottom-left corner arc
+                            d = `M ${x + r} ${y} A ${r} ${r} 0 0 1 ${x + tileSize} ${y + r} ` +
+                                `M ${x + r} ${y + tileSize} A ${r} ${r} 0 0 1 ${x} ${y + r}`;
+                        }
+                    } else if (shapeType < 0.75) {
+                        // Full circle in center - 25% chance
+                        const circleR = r * 0.4; // smaller circle that fits in tile
+                        d = `M ${cx - circleR} ${cy} A ${circleR} ${circleR} 0 1 1 ${cx + circleR} ${cy} ` +
+                            `A ${circleR} ${circleR} 0 1 1 ${cx - circleR} ${cy}`;
                     } else {
-                        // Top-right corner arc + Bottom-left corner arc
-                        d = `M ${x + r} ${y} A ${r} ${r} 0 0 1 ${x + tileSize} ${y + r} ` +
-                            `M ${x + r} ${y + tileSize} A ${r} ${r} 0 0 1 ${x} ${y + r}`;
+                        // Half circles - 25% chance
+                        const variant = Math.floor(Math.random() * 4);
+                        const halfR = r * 0.6;
+                        if (variant === 0) {
+                            // Half circle on top edge
+                            d = `M ${cx - halfR} ${y} A ${halfR} ${halfR} 0 0 0 ${cx + halfR} ${y}`;
+                        } else if (variant === 1) {
+                            // Half circle on bottom edge
+                            d = `M ${cx - halfR} ${y + tileSize} A ${halfR} ${halfR} 0 0 1 ${cx + halfR} ${y + tileSize}`;
+                        } else if (variant === 2) {
+                            // Half circle on left edge
+                            d = `M ${x} ${cy - halfR} A ${halfR} ${halfR} 0 0 0 ${x} ${cy + halfR}`;
+                        } else {
+                            // Half circle on right edge
+                            d = `M ${x + tileSize} ${cy - halfR} A ${halfR} ${halfR} 0 0 1 ${x + tileSize} ${cy + halfR}`;
+                        }
                     }
                     
                     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
