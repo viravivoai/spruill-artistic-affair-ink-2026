@@ -78,7 +78,7 @@
             z-index: 1;
         }
 
-        /* Navigation - inline at top */
+        /* Navigation - inline at top in a box */
         nav {
             position: relative;
             z-index: 100;
@@ -86,6 +86,13 @@
             display: flex;
             justify-content: flex-end;
             align-items: center;
+        }
+
+        .nav-box {
+            background: var(--paper-white);
+            border: 3px solid var(--ink-black);
+            padding: 0.8rem 1.5rem;
+            box-shadow: 4px 4px 0 var(--ink-black);
         }
 
         .nav-links {
@@ -599,6 +606,55 @@
 
         /* Color accent classes */
         .accent-red { color: var(--ink-red); }
+
+        /* Polaroid Gallery */
+        .polaroid-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 0.8rem 0.8rem 2.5rem 0.8rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+            transition: transform 0.3s, box-shadow 0.3s;
+            max-width: 200px;
+        }
+
+        .polaroid:hover {
+            transform: scale(1.05) rotate(0deg) !important;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .polaroid-caption {
+            font-family: 'Shadows Into Light', cursive;
+            font-size: 0.9rem;
+            color: var(--ink-dark);
+            text-align: center;
+            margin-top: 0.8rem;
+        }
+
+        /* Random rotations for polaroids */
+        .polaroid:nth-child(1) { transform: rotate(-3deg); }
+        .polaroid:nth-child(2) { transform: rotate(2deg); }
+        .polaroid:nth-child(3) { transform: rotate(-2deg); }
+        .polaroid:nth-child(4) { transform: rotate(4deg); }
+        .polaroid:nth-child(5) { transform: rotate(-1deg); }
+        .polaroid:nth-child(6) { transform: rotate(3deg); }
+        .polaroid:nth-child(7) { transform: rotate(-4deg); }
+        .polaroid:nth-child(8) { transform: rotate(1deg); }
     </style>
 </head>
 <body>
@@ -613,12 +669,15 @@
 
     <!-- Navigation -->
     <nav>
-        <ul class="nav-links">
-            <li><a href="#about">About</a></li>
-            <li><a href="#activities">Activities</a></li>
-            <li><a href="#sponsors">Sponsors</a></li>
-            <li><a href="https://wedoauctions.com/app/public/bidapp/spruillarts/tickets/Artistic_Affair" target="_blank">Tickets</a></li>
-        </ul>
+        <div class="nav-box">
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#activities">Activities</a></li>
+                <li><a href="#gallery">2025 Gallery</a></li>
+                <li><a href="#sponsors">Sponsors</a></li>
+                <li><a href="https://wedoauctions.com/app/public/bidapp/spruillarts/tickets/Artistic_Affair" target="_blank">Tickets</a></li>
+            </ul>
+        </div>
     </nav>
 
     <!-- Hero Section -->
@@ -682,6 +741,50 @@
                 <div class="stat">
                     <span class="stat-number">$17.5K</span>
                     <span class="stat-label">For Scholarships</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2025 Gallery Section -->
+    <section id="gallery" class="section">
+        <div class="main-content">
+            <div class="content-box scroll-reveal" style="text-align: center;">
+                <h2 class="section-title">Images from 2025</h2>
+                
+                <div class="polaroid-gallery" style="margin-top: 1.5rem;">
+                    <div class="polaroid scroll-reveal">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_0_ILrmD2jLYf.jpg" alt="Artistic Affair 2025">
+                        <div class="polaroid-caption">Opening Night!</div>
+                    </div>
+                    <div class="polaroid scroll-reveal">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_1_H3UHTLnctK.jpg" alt="Artistic Affair 2025">
+                        <div class="polaroid-caption">Art & Friends</div>
+                    </div>
+                    <div class="polaroid scroll-reveal">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_2_cRpYtKPrEN.jpg" alt="Artistic Affair 2025">
+                        <div class="polaroid-caption">Creative Crowd</div>
+                    </div>
+                    <div class="polaroid scroll-reveal">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_3_qQLSWIWUP2.jpg" alt="Artistic Affair 2025">
+                        <div class="polaroid-caption">Auction Fun</div>
+                    </div>
+                    <div class="polaroid scroll-reveal">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_4_17nLYSVCAi.jpg" alt="Artistic Affair 2025">
+                        <div class="polaroid-caption">Party Time!</div>
+                    </div>
+                    <div class="polaroid scroll-reveal">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_5_Eq2yp7ZQ4G.jpg" alt="Artistic Affair 2025">
+                        <div class="polaroid-caption">Celebrating Art</div>
+                    </div>
+                    <div class="polaroid scroll-reveal">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_6_wbqt45Hv8D.jpg" alt="Artistic Affair 2025">
+                        <div class="polaroid-caption">Great Vibes</div>
+                    </div>
+                    <div class="polaroid scroll-reveal">
+                        <img src="https://d2y9d0ry7vx6k5.cloudfront.net/events/22165/images/gallery_7_h3cLIoQxJD.jpg" alt="Artistic Affair 2025">
+                        <div class="polaroid-caption">Community Love</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1039,8 +1142,10 @@
             if (!initialAnimationComplete) return;
             
             const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-            // Map scroll (0-100%) to drawing progress (10%-100%)
-            const targetProgress = 0.1 + scrollPercent * 0.9;
+            // Map scroll to drawing progress more slowly
+            // Use a slower curve - need to scroll ~70% to complete drawing
+            const slowedScroll = Math.pow(scrollPercent, 0.6); // Slower progression
+            const targetProgress = 0.1 + slowedScroll * 0.9;
             
             // Only update if scrolling would increase progress
             if (targetProgress > currentProgress) {
