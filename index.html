@@ -59,7 +59,7 @@
         .maze-path {
             fill: none;
             stroke: var(--ink-black);
-            stroke-width: 12;
+            stroke-width: 7;
             stroke-linecap: round;
             stroke-linejoin: round;
             opacity: 1;
@@ -922,8 +922,9 @@
 
     <!-- Truchet Maze & Scroll Scripts -->
     <script>
-        // Truchet Tile Maze Generator - Bold classic style
-        // Creates curved maze patterns with thick constant-width lines
+        // Truchet Tile Maze Generator - Clean loopy style
+        // Based on truchetpatterns.netlify.app approach
+        // Two quarter-circle arcs per tile connecting edge midpoints
         
         function generateTruchetMaze() {
             const svg = document.getElementById('mazeSvg');
@@ -931,8 +932,9 @@
             const viewportHeight = window.innerHeight;
             const pageHeight = document.body.scrollHeight;
             
-            // Tile size - larger tiles with thick strokes for bold pattern
+            // Tile size - 50px tiles like the reference
             const tileSize = 50;
+            const r = tileSize / 2; // radius = 25
             
             // Calculate grid dimensions to cover entire scrollable page
             const cols = Math.ceil(viewportWidth / tileSize) + 2;
@@ -956,53 +958,34 @@
                 svg.appendChild(g);
             }
             
-            // Generate Truchet tiles with variety: quarter circles, full circles, half circles
+            // Generate Truchet tiles - classic loopy pattern
+            // Each tile has TWO quarter-circle arcs connecting midpoints of adjacent edges
             for (let row = 0; row < rows; row++) {
                 for (let col = 0; col < cols; col++) {
                     const x = col * tileSize;
                     const y = row * tileSize;
-                    const r = tileSize / 2;
-                    const cx = x + r; // center x
-                    const cy = y + r; // center y
                     
-                    // Randomly choose shape type
-                    const shapeType = Math.random();
+                    // Edge midpoints
+                    const top = { x: x + r, y: y };
+                    const bottom = { x: x + r, y: y + tileSize };
+                    const left = { x: x, y: y + r };
+                    const right = { x: x + tileSize, y: y + r };
                     
                     let d;
-                    if (shapeType < 0.5) {
-                        // Quarter circles (classic Truchet) - 50% chance
-                        const variant = Math.random() > 0.5 ? 'A' : 'B';
-                        if (variant === 'A') {
-                            // Top-left corner arc + Bottom-right corner arc
-                            d = `M ${x} ${y + r} A ${r} ${r} 0 0 1 ${x + r} ${y} ` +
-                                `M ${x + tileSize} ${y + r} A ${r} ${r} 0 0 1 ${x + r} ${y + tileSize}`;
-                        } else {
-                            // Top-right corner arc + Bottom-left corner arc
-                            d = `M ${x + r} ${y} A ${r} ${r} 0 0 1 ${x + tileSize} ${y + r} ` +
-                                `M ${x + r} ${y + tileSize} A ${r} ${r} 0 0 1 ${x} ${y + r}`;
-                        }
-                    } else if (shapeType < 0.75) {
-                        // Full circle in center - 25% chance
-                        const circleR = r * 0.4; // smaller circle that fits in tile
-                        d = `M ${cx - circleR} ${cy} A ${circleR} ${circleR} 0 1 1 ${cx + circleR} ${cy} ` +
-                            `A ${circleR} ${circleR} 0 1 1 ${cx - circleR} ${cy}`;
+                    
+                    // Randomly choose one of two orientations
+                    if (Math.random() > 0.5) {
+                        // Variant A: connects left-to-top and right-to-bottom
+                        // Arc from bottom midpoint to right midpoint (sweep clockwise)
+                        // Arc from top midpoint to left midpoint (sweep counter-clockwise)
+                        d = `M ${bottom.x} ${bottom.y} A ${r} ${r} 0 0 1 ${right.x} ${right.y} ` +
+                            `M ${top.x} ${top.y} A ${r} ${r} 0 0 0 ${left.x} ${left.y}`;
                     } else {
-                        // Half circles - 25% chance
-                        const variant = Math.floor(Math.random() * 4);
-                        const halfR = r * 0.6;
-                        if (variant === 0) {
-                            // Half circle on top edge
-                            d = `M ${cx - halfR} ${y} A ${halfR} ${halfR} 0 0 0 ${cx + halfR} ${y}`;
-                        } else if (variant === 1) {
-                            // Half circle on bottom edge
-                            d = `M ${cx - halfR} ${y + tileSize} A ${halfR} ${halfR} 0 0 1 ${cx + halfR} ${y + tileSize}`;
-                        } else if (variant === 2) {
-                            // Half circle on left edge
-                            d = `M ${x} ${cy - halfR} A ${halfR} ${halfR} 0 0 0 ${x} ${cy + halfR}`;
-                        } else {
-                            // Half circle on right edge
-                            d = `M ${x + tileSize} ${cy - halfR} A ${halfR} ${halfR} 0 0 1 ${x + tileSize} ${cy + halfR}`;
-                        }
+                        // Variant B: connects left-to-bottom and right-to-top
+                        // Arc from bottom midpoint to left midpoint (sweep counter-clockwise)
+                        // Arc from top midpoint to right midpoint (sweep clockwise)
+                        d = `M ${bottom.x} ${bottom.y} A ${r} ${r} 0 0 0 ${left.x} ${left.y} ` +
+                            `M ${top.x} ${top.y} A ${r} ${r} 0 0 1 ${right.x} ${right.y}`;
                     }
                     
                     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
