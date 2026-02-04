@@ -59,10 +59,10 @@
         .maze-path {
             fill: none;
             stroke: var(--ink-black);
-            stroke-width: 3;
+            stroke-width: 4.5;
             stroke-linecap: round;
             stroke-linejoin: round;
-            opacity: 0.18;
+            opacity: 0.35;
         }
 
         /* Paper texture overlay */
@@ -146,6 +146,9 @@
             margin: 0 auto;
             position: relative;
             z-index: 10;
+            background: rgba(250, 247, 240, 0.85);
+            padding: 2rem;
+            border-radius: 4px;
         }
 
         /* Sections */
@@ -919,8 +922,8 @@
 
     <!-- Truchet Maze & Scroll Scripts -->
     <script>
-        // Truchet Tile Maze Generator
-        // Creates organic curved maze patterns with constant-width lines
+        // Truchet Tile Maze Generator with organic variations
+        // Creates curved maze patterns with constant-width lines
         
         function generateTruchetMaze() {
             const svg = document.getElementById('mazeSvg');
@@ -929,7 +932,7 @@
             const pageHeight = document.body.scrollHeight;
             
             // Tile size - smaller = denser pattern
-            const tileSize = 40;
+            const tileSize = 35;
             
             // Calculate grid dimensions to cover entire scrollable page
             const cols = Math.ceil(viewportWidth / tileSize) + 2;
@@ -944,7 +947,7 @@
             svg.innerHTML = '';
             
             // Create groups for different scroll reveal timing
-            const numGroups = 8;
+            const numGroups = 10;
             const groups = [];
             for (let i = 0; i < numGroups; i++) {
                 const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -953,32 +956,42 @@
                 svg.appendChild(g);
             }
             
-            // Generate Truchet tiles
-            // Each tile has two quarter-circle arcs
-            // Type A: connects top-left to bottom-right corners
-            // Type B: connects top-right to bottom-left corners
-            
+            // Generate Truchet tiles with organic variations
             for (let row = 0; row < rows; row++) {
                 for (let col = 0; col < cols; col++) {
                     const x = col * tileSize;
                     const y = row * tileSize;
-                    const r = tileSize / 2; // Arc radius
+                    const r = tileSize / 2;
                     
                     // Randomly choose tile type
                     const type = Math.random() > 0.5 ? 'A' : 'B';
                     
-                    // Create the two arcs for this tile
+                    // Add organic variation - wobble the control points slightly
+                    const wobble = () => (Math.random() - 0.5) * 6;
+                    const w1 = wobble(), w2 = wobble(), w3 = wobble(), w4 = wobble();
+                    
+                    // Vary the radius slightly for organic feel
+                    const rVar = r + (Math.random() - 0.5) * 4;
+                    
+                    // Create curved paths with bezier curves for more organic look
                     let d;
                     if (type === 'A') {
-                        // Top-left corner arc (connects top edge to left edge)
-                        // Bottom-right corner arc (connects bottom edge to right edge)
-                        d = `M ${x} ${y + r} A ${r} ${r} 0 0 1 ${x + r} ${y} ` +
-                            `M ${x + tileSize} ${y + r} A ${r} ${r} 0 0 1 ${x + r} ${y + tileSize}`;
+                        // Use quadratic bezier for more organic curves
+                        const cx1 = x + w1;
+                        const cy1 = y + w2;
+                        const cx2 = x + tileSize + w3;
+                        const cy2 = y + tileSize + w4;
+                        
+                        d = `M ${x} ${y + r} Q ${cx1} ${cy1} ${x + r} ${y} ` +
+                            `M ${x + tileSize} ${y + r} Q ${cx2} ${cy2} ${x + r} ${y + tileSize}`;
                     } else {
-                        // Top-right corner arc (connects top edge to right edge)
-                        // Bottom-left corner arc (connects bottom edge to left edge)
-                        d = `M ${x + r} ${y} A ${r} ${r} 0 0 1 ${x + tileSize} ${y + r} ` +
-                            `M ${x + r} ${y + tileSize} A ${r} ${r} 0 0 1 ${x} ${y + r}`;
+                        const cx1 = x + tileSize + w1;
+                        const cy1 = y + w2;
+                        const cx2 = x + w3;
+                        const cy2 = y + tileSize + w4;
+                        
+                        d = `M ${x + r} ${y} Q ${cx1} ${cy1} ${x + tileSize} ${y + r} ` +
+                            `M ${x + r} ${y + tileSize} Q ${cx2} ${cy2} ${x} ${y + r}`;
                     }
                     
                     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -994,6 +1007,22 @@
                     path.style.strokeDasharray = length;
                     path.style.strokeDashoffset = length;
                     path.dataset.length = length;
+                    
+                    // Occasionally add extra decorative elements
+                    if (Math.random() > 0.92) {
+                        const extraPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        extraPath.classList.add('maze-path');
+                        const ex = x + r + (Math.random() - 0.5) * 10;
+                        const ey = y + r + (Math.random() - 0.5) * 10;
+                        const eSize = 3 + Math.random() * 5;
+                        // Small loop or squiggle
+                        extraPath.setAttribute('d', `M ${ex} ${ey} q ${eSize} ${-eSize} ${eSize*2} 0 q ${eSize} ${eSize} 0 ${eSize}`);
+                        groups[Math.min(groupIndex, numGroups - 1)].appendChild(extraPath);
+                        const eLen = extraPath.getTotalLength();
+                        extraPath.style.strokeDasharray = eLen;
+                        extraPath.style.strokeDashoffset = eLen;
+                        extraPath.dataset.length = eLen;
+                    }
                 }
             }
         }
@@ -1003,16 +1032,20 @@
             const svg = document.getElementById('mazeSvg');
             const groups = svg.querySelectorAll('g');
             
+            // Start drawing after 10% scroll (delay the start)
+            const scrollStart = 0.08;
+            const adjustedScroll = Math.max(0, (scrollPercent - scrollStart) / (1 - scrollStart));
+            
             groups.forEach((group, index) => {
                 const paths = group.querySelectorAll('.maze-path');
-                const groupStart = index / groups.length * 0.6;
-                const groupEnd = groupStart + 0.5;
+                const groupStart = index / groups.length * 0.5;
+                const groupEnd = groupStart + 0.4;
                 
                 paths.forEach(path => {
                     const length = parseFloat(path.dataset.length);
                     
                     // Calculate progress for this group
-                    let progress = (scrollPercent - groupStart) / (groupEnd - groupStart);
+                    let progress = (adjustedScroll - groupStart) / (groupEnd - groupStart);
                     progress = Math.max(0, Math.min(1, progress));
                     progress = easeInOutCubic(progress);
                     
