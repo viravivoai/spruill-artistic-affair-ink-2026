@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Truchet 14x14 Test</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #f5f2eb;
+        }
+        svg {
+            border: 2px solid #333;
+        }
+        .maze-path {
+            fill: none;
+            stroke: #1a1a1a;
+            stroke-width: 7;
+            stroke-linecap: round;
+        }
+    </style>
+</head>
+<body>
+    <svg id="testSvg" width="700" height="700" viewBox="0 0 700 700">
+    </svg>
+    
+    <script>
+        const svg = document.getElementById('testSvg');
+        const tileSize = 50;
+        const r = tileSize / 2;
+        const cols = 14;
+        const rows = 14;
+        
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                const x = col * tileSize;
+                const y = row * tileSize;
+                
+                let d;
+                
+                if (Math.random() > 0.5) {
+                    // LoopyOne: bottom→right arc, left→top arc
+                    d = `M ${x + r} ${y + tileSize} A ${r} ${r} 0 0 1 ${x + tileSize} ${y + r} ` +
+                        `M ${x} ${y + r} A ${r} ${r} 0 0 0 ${x + r} ${y}`;
+                } else {
+                    // LoopyTwo: bottom→left arc, right→top arc
+                    d = `M ${x + r} ${y + tileSize} A ${r} ${r} 0 0 0 ${x} ${y + r} ` +
+                        `M ${x + tileSize} ${y + r} A ${r} ${r} 0 0 1 ${x + r} ${y}`;
+                }
+                
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.classList.add('maze-path');
+                path.setAttribute('d', d);
+                svg.appendChild(path);
+            }
+        }
+    </script>
+</body>
+</html>
