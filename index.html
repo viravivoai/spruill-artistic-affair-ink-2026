@@ -1227,17 +1227,18 @@
         
         // Doodle drawing animation - JS-based for accurate path lengths
         // Each doodle has its OWN independent animation loop (separate RAF per doodle)
-        // This ensures each doodle's fill triggers 1.5s after ITS OWN draw starts
+        // Staggered draw starts: Heart at 0ms, Flower at 1000ms, Star at 2000ms
+        // Fill begins 2000ms after EACH doodle's draw starts
         function initDoodleAnimations() {
             const doodles = document.querySelectorAll('.doodle-figure');
             
             // Different timing for each doodle (in milliseconds)
-            // Heart: 3s draw, Flower: 5s draw, Star: 4s draw
-            // Fill starts 1.5s after each doodle's draw begins
+            // drawStartDelay: staggered start for each doodle
+            // Fill always starts 2000ms after that doodle's draw starts
             const timingConfigs = [
-                { drawDuration: 3000, fillDuration: 100, filledHoldDuration: 5000, fadeDuration: 400 }, // Heart
-                { drawDuration: 5000, fillDuration: 100, filledHoldDuration: 5000, fadeDuration: 400 }, // Flower
-                { drawDuration: 4000, fillDuration: 100, filledHoldDuration: 5000, fadeDuration: 400 }  // Star
+                { drawStartDelay: 0,    drawDuration: 3000, fillDuration: 100, fadeDuration: 400 }, // Heart
+                { drawStartDelay: 1000, drawDuration: 5000, fillDuration: 100, fadeDuration: 400 }, // Flower
+                { drawStartDelay: 2000, drawDuration: 4000, fillDuration: 100, fadeDuration: 400 }  // Star
             ];
             
             // Create an independent animation controller for each doodle
@@ -1251,14 +1252,15 @@
                 path.style.fillOpacity = 0;
                 
                 const config = timingConfigs[index] || timingConfigs[0];
-                // Fill starts at FIXED 2000ms (2 seconds) after THIS doodle's cycle starts
-                const fillStartTime = 2000;
+                
+                // Fill starts 2000ms after THIS doodle's draw starts
+                const fillStartTime = config.drawStartDelay + 2000;
                 // Fill ends quickly after it starts (100ms transition)
                 const fillEndTime = fillStartTime + config.fillDuration;
-                // Fade starts 3 seconds AFTER the draw completes (so doodles desync based on draw duration)
+                // Fade starts 3 seconds AFTER the draw completes
                 const holdAfterDraw = 3000;
-                const fadeStartTime = config.drawDuration + holdAfterDraw;
-                // Total cycle: draw + hold + fade (differs per doodle, causing natural desync)
+                const fadeStartTime = config.drawStartDelay + config.drawDuration + holdAfterDraw;
+                // Total cycle: based on the latest event (fadeDuration after fadeStartTime)
                 const totalCycle = fadeStartTime + config.fadeDuration;
                 
                 // This doodle's own state - completely independent of other doodles
@@ -1276,17 +1278,20 @@
                     }
                     
                     // Calculate stroke progress (0 to 1) based on where we are
-                    // Stroke draws from 0 to drawDuration
+                    // Stroke draws from drawStartDelay to drawStartDelay + drawDuration
                     let strokeProgress = 0;
-                    if (cycleTime < config.drawDuration) {
-                        strokeProgress = cycleTime / config.drawDuration;
+                    const drawElapsed = cycleTime - config.drawStartDelay;
+                    if (drawElapsed < 0) {
+                        strokeProgress = 0; // Haven't started drawing yet
+                    } else if (drawElapsed < config.drawDuration) {
+                        strokeProgress = drawElapsed / config.drawDuration;
                     } else {
                         strokeProgress = 1; // Fully drawn
                     }
                     const easedStroke = easeInOutCubic(strokeProgress);
                     
                     // Calculate fill progress (0 to 1)
-                    // Fill starts at 1.5s into THIS doodle's cycle
+                    // Fill starts 2000ms after THIS doodle's draw starts
                     let fillProgress = 0;
                     if (cycleTime >= fillStartTime && cycleTime < fillEndTime) {
                         fillProgress = (cycleTime - fillStartTime) / config.fillDuration;
