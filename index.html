@@ -1233,11 +1233,11 @@
             
             // Different timing for each doodle (in milliseconds)
             // Heart: 3s draw, Flower: 5s draw, Star: 4s draw
-            // All have 3s hold, then fill in, hold filled, fade out
+            // Quick fill transition (0.1s), hold filled for 5s, then fade out
             const timingConfigs = [
-                { drawDuration: 3000, holdDuration: 3000, fillDuration: 500, filledHoldDuration: 1000, fadeDuration: 400 }, // Heart
-                { drawDuration: 5000, holdDuration: 3000, fillDuration: 500, filledHoldDuration: 1000, fadeDuration: 400 }, // Flower
-                { drawDuration: 4000, holdDuration: 3000, fillDuration: 500, filledHoldDuration: 1000, fadeDuration: 400 }  // Star
+                { drawDuration: 3000, holdDuration: 0, fillDuration: 100, filledHoldDuration: 5000, fadeDuration: 400 }, // Heart
+                { drawDuration: 5000, holdDuration: 0, fillDuration: 100, filledHoldDuration: 5000, fadeDuration: 400 }, // Flower
+                { drawDuration: 4000, holdDuration: 0, fillDuration: 100, filledHoldDuration: 5000, fadeDuration: 400 }  // Star
             ];
             
             doodles.forEach((svg, index) => {
