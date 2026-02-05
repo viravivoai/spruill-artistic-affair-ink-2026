@@ -1251,8 +1251,8 @@
                 path.style.fillOpacity = 0;
                 
                 const config = timingConfigs[index] || timingConfigs[0];
-                // Fill starts at FIXED 1500ms (1.5 seconds) after THIS doodle's cycle starts
-                const fillStartTime = 1500;
+                // Fill starts at FIXED 2000ms (2 seconds) after THIS doodle's cycle starts
+                const fillStartTime = 2000;
                 // Fill ends quickly after it starts (100ms transition)
                 const fillEndTime = fillStartTime + config.fillDuration;
                 // Fade starts 3 seconds AFTER the draw completes (so doodles desync based on draw duration)
