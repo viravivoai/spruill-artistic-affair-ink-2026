@@ -393,7 +393,7 @@
         .haring-figure:nth-child(2) { animation-delay: 0.15s; }
         .haring-figure:nth-child(3) { animation-delay: 0.3s; }
 
-        /* Doodle animation */
+        /* Doodle animation container */
         .doodle-figure {
             width: 5rem;
             height: 5rem;
@@ -404,29 +404,59 @@
         .doodle-figure:nth-child(2) { animation-delay: 0.15s; }
         .doodle-figure:nth-child(3) { animation-delay: 0.3s; }
 
-        /* Stroke animation for SVGs loaded as img */
-        .doodle-figure {
-            animation: bounce 1s ease-in-out infinite alternate;
-            --draw-duration: 3s;
+        /* Doodle SVG stroke drawing animation */
+        .doodle-figure .doodle-path {
+            fill: none;
+            stroke: var(--ink-black);
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
-        @keyframes drawStroke {
-            0% {
-                stroke-dashoffset: var(--dash-length);
-                opacity: 1;
-            }
-            90% {
-                stroke-dashoffset: 0;
-                opacity: 1;
-            }
-            95% {
-                stroke-dashoffset: 0;
-                opacity: 0.5;
-            }
-            100% {
-                stroke-dashoffset: var(--dash-length);
-                opacity: 1;
-            }
+        /* Arrow doodle - path length ~180, starts first */
+        .doodle-figure.arrow .doodle-path {
+            stroke-dasharray: 180;
+            animation: drawArrow 6s ease-in-out infinite;
+        }
+
+        /* Flower doodle - path length ~350, starts 0.5s later */
+        .doodle-figure.flower .doodle-path {
+            stroke-dasharray: 350;
+            stroke-width: 3.5;
+            animation: drawFlower 6s ease-in-out 0.5s infinite;
+        }
+
+        /* Star doodle - path length ~280, starts 1s later */
+        .doodle-figure.star .doodle-path {
+            stroke-dasharray: 280;
+            animation: drawStar 6s ease-in-out 1s infinite;
+        }
+
+        /* Arrow: 3s draw, 3s pause, quick fade reset */
+        @keyframes drawArrow {
+            0% { stroke-dashoffset: 180; opacity: 1; }
+            50% { stroke-dashoffset: 0; opacity: 1; }
+            90% { stroke-dashoffset: 0; opacity: 1; }
+            95% { stroke-dashoffset: 0; opacity: 0; }
+            100% { stroke-dashoffset: 180; opacity: 1; }
+        }
+
+        /* Flower: 3s draw, 3s pause, quick fade reset */
+        @keyframes drawFlower {
+            0% { stroke-dashoffset: 350; opacity: 1; }
+            50% { stroke-dashoffset: 0; opacity: 1; }
+            90% { stroke-dashoffset: 0; opacity: 1; }
+            95% { stroke-dashoffset: 0; opacity: 0; }
+            100% { stroke-dashoffset: 350; opacity: 1; }
+        }
+
+        /* Star: 3s draw, 3s pause, quick fade reset */
+        @keyframes drawStar {
+            0% { stroke-dashoffset: 280; opacity: 1; }
+            50% { stroke-dashoffset: 0; opacity: 1; }
+            90% { stroke-dashoffset: 0; opacity: 1; }
+            95% { stroke-dashoffset: 0; opacity: 0; }
+            100% { stroke-dashoffset: 280; opacity: 1; }
         }
 
         @keyframes bounce {
@@ -884,9 +914,18 @@
             <div class="content-box scroll-reveal" style="text-align: center; margin-bottom: 1.5rem;">
                 <h2 class="section-title" style="margin-bottom: 0;">Collaborative Mural</h2>
                 <div class="haring-figures" style="margin-top: 1.5rem;">
-                    <img src="images/arrow-doodle-animated.svg" alt="Arrow Doodle" class="doodle-figure">
-                    <img src="images/flower-doodle-animated.svg" alt="Flower Doodle" class="doodle-figure">
-                    <img src="images/star-doodle-animated.svg" alt="Star Doodle" class="doodle-figure">
+                    <!-- Arrow Doodle - Inline SVG for reliable animation -->
+                    <svg class="doodle-figure arrow" viewBox="0 0 100 100" aria-label="Arrow Doodle">
+                        <path class="doodle-path" d="M15,70 Q25,20 50,25 Q80,30 75,55 Q72,75 55,75 M55,75 L72,65 M55,75 L65,88"/>
+                    </svg>
+                    <!-- Flower Doodle - Inline SVG for reliable animation -->
+                    <svg class="doodle-figure flower" viewBox="0 0 100 100" aria-label="Flower Doodle">
+                        <path class="doodle-path" d="M50,35 Q60,20 50,15 Q40,20 50,35 M50,35 Q65,30 75,40 Q65,45 50,35 M50,35 Q60,50 65,60 Q55,55 50,35 M50,35 Q40,50 35,60 Q45,55 50,35 M50,35 Q35,30 25,40 Q35,45 50,35 M50,50 A10,10 0 1,1 50,70 A10,10 0 1,1 50,50"/>
+                    </svg>
+                    <!-- Star Doodle - Inline SVG for reliable animation -->
+                    <svg class="doodle-figure star" viewBox="0 0 100 100" aria-label="Star Doodle">
+                        <path class="doodle-path" d="M50,10 L58,38 L88,38 L64,56 L73,85 L50,68 L27,85 L36,56 L12,38 L42,38 Z M45,45 L55,52"/>
+                    </svg>
                 </div>
             </div>
             

@@ -1,43 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 464.513 464.513" width="100" height="100">
-<defs>
-<style>
-.doodle-path {
-  fill: none;
-  stroke: #1a1a1a;
-  stroke-width: 8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 500;
-  animation: drawDoodle 3s ease-in-out infinite;
-}
-
-@keyframes drawDoodle {
-  0% {
-    stroke-dashoffset: 500;
-    opacity: 1;
-  }
-  70% {
-    stroke-dashoffset: 0;
-    opacity: 1;
-  }
-  85% {
-    stroke-dashoffset: 0;
-    opacity: 0.3;
-  }
-  100% {
-    stroke-dashoffset: 500;
-    opacity: 1;
-  }
-}
-
-.doodle-path:nth-of-type(2) { animation-delay: 0.1s; }
-.doodle-path:nth-of-type(3) { animation-delay: 0.2s; }
-</style>
-</defs>
-<g>
-  <path class="doodle-path" d="M64.471,260.673c-32.16,32.261-53.755,75.974-18.683,117.639c38.788,46.085,86.166,49.572,127.2,18.294c17.224,36.267,45.965,69.941,90.74,57.222"/>
-  <path class="doodle-path" d="M234.63,161.316c39.181,0,70.939,31.763,70.939,70.938c0,39.185-31.759,70.943-70.939,70.943c-39.183,0-70.943-31.759-70.943-70.943"/>
-  <path class="doodle-path" d="M300,200c20,20 40,40 60,20"/>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Simple flower doodle with SMIL animation -->
+  <!-- 5 petals + center circle. Total path ~350 -->
+  <g fill="none" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- All petals as one continuous path for sequential drawing -->
+    <path 
+      stroke-dasharray="350"
+      stroke-dashoffset="350"
+      d="M50,35 Q60,20 50,15 Q40,20 50,35
+         M50,35 Q65,30 75,40 Q65,45 50,35
+         M50,35 Q60,50 65,60 Q55,55 50,35
+         M50,35 Q40,50 35,60 Q45,55 50,35
+         M50,35 Q35,30 25,40 Q35,45 50,35
+         M50,50 A10,10 0 1,1 50,70 A10,10 0 1,1 50,50">
+      <animate 
+        attributeName="stroke-dashoffset" 
+        values="350;0;0;350" 
+        keyTimes="0;0.5;0.95;1" 
+        dur="6s" 
+        repeatCount="indefinite"
+        calcMode="spline"
+        keySplines="0.4 0 0.2 1; 0 0 1 1; 0 0 1 1"/>
+      <animate
+        attributeName="opacity"
+        values="1;1;1;0;1"
+        keyTimes="0;0.5;0.9;0.95;1"
+        dur="6s"
+        repeatCount="indefinite"/>
+    </path>
+  </g>
 </svg>
