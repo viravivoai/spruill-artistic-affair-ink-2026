@@ -406,7 +406,8 @@
 
         /* Doodle SVG stroke drawing animation */
         .doodle-figure .doodle-path {
-            fill: none;
+            fill: var(--ink-black);
+            fill-opacity: 0;
             stroke: var(--ink-black);
             stroke-width: 12;
             stroke-linecap: round;
@@ -1225,9 +1226,19 @@
         });
         
         // Doodle drawing animation - JS-based for accurate path lengths
+        // Each doodle has independent timing: draw → hold (stroke) → fill in → hold (filled) → fade → restart
         function initDoodleAnimations() {
             const doodles = document.querySelectorAll('.doodle-figure');
             const animationData = [];
+            
+            // Different timing for each doodle (in milliseconds)
+            // Heart: 3s draw, Flower: 5s draw, Star: 4s draw
+            // All have 3s hold, then fill in, hold filled, fade out
+            const timingConfigs = [
+                { drawDuration: 3000, holdDuration: 3000, fillDuration: 500, filledHoldDuration: 1000, fadeDuration: 400 }, // Heart
+                { drawDuration: 5000, holdDuration: 3000, fillDuration: 500, filledHoldDuration: 1000, fadeDuration: 400 }, // Flower
+                { drawDuration: 4000, holdDuration: 3000, fillDuration: 500, filledHoldDuration: 1000, fadeDuration: 400 }  // Star
+            ];
             
             doodles.forEach((svg, index) => {
                 const path = svg.querySelector('.doodle-path');
@@ -1236,51 +1247,73 @@
                 const length = path.getTotalLength();
                 path.style.strokeDasharray = length;
                 path.style.strokeDashoffset = length;
+                path.style.fillOpacity = 0;
+                
+                const config = timingConfigs[index] || timingConfigs[0];
+                const totalCycle = config.drawDuration + config.holdDuration + config.fillDuration + config.filledHoldDuration + config.fadeDuration;
                 
                 animationData.push({
                     path: path,
                     length: length,
-                    delay: index * 500, // Stagger start: 0s, 0.5s, 1s
-                    drawDuration: 3000, // 3 seconds to draw
-                    holdDuration: 3000, // 3 seconds hold
-                    fadeDuration: 300   // 0.3s fade
+                    drawDuration: config.drawDuration,
+                    holdDuration: config.holdDuration,
+                    fillDuration: config.fillDuration,
+                    filledHoldDuration: config.filledHoldDuration,
+                    fadeDuration: config.fadeDuration,
+                    totalCycle: totalCycle,
+                    startTime: performance.now() // Each starts immediately, cycles independently
                 });
             });
             
-            // Animation loop
-            const totalCycle = 6300; // 3s draw + 3s hold + 0.3s fade
-            
             function animateDoodles(timestamp) {
                 animationData.forEach(data => {
-                    const elapsed = (timestamp - data.delay) % (totalCycle + data.delay);
-                    const cycleTime = ((timestamp - data.delay) % totalCycle + totalCycle) % totalCycle;
+                    // Calculate where we are in this doodle's cycle
+                    const elapsed = timestamp - data.startTime;
+                    const cycleTime = elapsed % data.totalCycle;
                     
-                    if (timestamp < data.delay) {
-                        // Not started yet
-                        data.path.style.strokeDashoffset = data.length;
-                        data.path.style.opacity = 1;
-                        return;
-                    }
+                    // Phase boundaries
+                    const drawEnd = data.drawDuration;
+                    const holdEnd = drawEnd + data.holdDuration;
+                    const fillEnd = holdEnd + data.fillDuration;
+                    const filledHoldEnd = fillEnd + data.filledHoldDuration;
+                    // fadeDuration takes us to totalCycle
                     
-                    if (cycleTime < data.drawDuration) {
-                        // Drawing phase (0-3s)
+                    if (cycleTime < drawEnd) {
+                        // PHASE 1: Drawing the stroke outline
                         const progress = cycleTime / data.drawDuration;
                         const eased = easeInOutCubic(progress);
                         data.path.style.strokeDashoffset = data.length * (1 - eased);
+                        data.path.style.fillOpacity = 0;
                         data.path.style.opacity = 1;
-                    } else if (cycleTime < data.drawDuration + data.holdDuration) {
-                        // Hold phase (3-6s)
+                    } else if (cycleTime < holdEnd) {
+                        // PHASE 2: Hold with stroke fully drawn (outline only)
                         data.path.style.strokeDashoffset = 0;
+                        data.path.style.fillOpacity = 0;
+                        data.path.style.opacity = 1;
+                    } else if (cycleTime < fillEnd) {
+                        // PHASE 3: Fill in with color (fill opacity animates in)
+                        const fillProgress = (cycleTime - holdEnd) / data.fillDuration;
+                        const easedFill = easeInOutCubic(fillProgress);
+                        data.path.style.strokeDashoffset = 0;
+                        data.path.style.fillOpacity = easedFill;
+                        data.path.style.opacity = 1;
+                    } else if (cycleTime < filledHoldEnd) {
+                        // PHASE 4: Hold the filled state
+                        data.path.style.strokeDashoffset = 0;
+                        data.path.style.fillOpacity = 1;
                         data.path.style.opacity = 1;
                     } else {
-                        // Fade phase (6-6.3s)
-                        const fadeProgress = (cycleTime - data.drawDuration - data.holdDuration) / data.fadeDuration;
+                        // PHASE 5: Fade out completely, then reset
+                        const fadeProgress = (cycleTime - filledHoldEnd) / data.fadeDuration;
+                        const opacity = Math.max(0, 1 - easeInOutCubic(fadeProgress));
                         data.path.style.strokeDashoffset = 0;
-                        data.path.style.opacity = Math.max(0, 1 - fadeProgress);
+                        data.path.style.fillOpacity = 1;
+                        data.path.style.opacity = opacity;
                         
-                        // Reset at end of fade
+                        // Reset at end of fade for next cycle
                         if (fadeProgress >= 1) {
                             data.path.style.strokeDashoffset = data.length;
+                            data.path.style.fillOpacity = 0;
                             data.path.style.opacity = 1;
                         }
                     }
