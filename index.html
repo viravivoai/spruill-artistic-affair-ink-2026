@@ -393,6 +393,42 @@
         .haring-figure:nth-child(2) { animation-delay: 0.15s; }
         .haring-figure:nth-child(3) { animation-delay: 0.3s; }
 
+        /* Doodle animation */
+        .doodle-figure {
+            width: 5rem;
+            height: 5rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+            animation: bounce 1s ease-in-out infinite alternate;
+        }
+
+        .doodle-figure:nth-child(2) { animation-delay: 0.15s; }
+        .doodle-figure:nth-child(3) { animation-delay: 0.3s; }
+
+        /* Stroke animation for SVGs loaded as img */
+        .doodle-figure {
+            animation: bounce 1s ease-in-out infinite alternate;
+            --draw-duration: 3s;
+        }
+
+        @keyframes drawStroke {
+            0% {
+                stroke-dashoffset: var(--dash-length);
+                opacity: 1;
+            }
+            90% {
+                stroke-dashoffset: 0;
+                opacity: 1;
+            }
+            95% {
+                stroke-dashoffset: 0;
+                opacity: 0.5;
+            }
+            100% {
+                stroke-dashoffset: var(--dash-length);
+                opacity: 1;
+            }
+        }
+
         @keyframes bounce {
             from { transform: translateY(0); }
             to { transform: translateY(-10px); }
@@ -848,9 +884,9 @@
             <div class="content-box scroll-reveal" style="text-align: center; margin-bottom: 1.5rem;">
                 <h2 class="section-title" style="margin-bottom: 0;">Collaborative Mural</h2>
                 <div class="haring-figures" style="margin-top: 1.5rem;">
-                    <span class="haring-figure">🎨</span>
-                    <span class="haring-figure">🖌️</span>
-                    <span class="haring-figure">✏️</span>
+                    <img src="images/arrow-doodle-animated.svg" alt="Arrow Doodle" class="doodle-figure">
+                    <img src="images/flower-doodle-animated.svg" alt="Flower Doodle" class="doodle-figure">
+                    <img src="images/star-doodle-animated.svg" alt="Star Doodle" class="doodle-figure">
                 </div>
             </div>
             
