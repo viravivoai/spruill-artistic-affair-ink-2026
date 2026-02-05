@@ -1250,9 +1250,9 @@
                 path.style.fillOpacity = 0;
                 
                 const config = timingConfigs[index] || timingConfigs[0];
-                // Fill starts at 90% of draw duration
-                const fillStartTime = config.drawDuration * 0.9;
-                // Fill ends quickly after it starts
+                // Fill starts at FIXED 1500ms (1.5 seconds) after cycle starts
+                const fillStartTime = 1500;
+                // Fill ends quickly after it starts (100ms transition)
                 const fillEndTime = fillStartTime + config.fillDuration;
                 // Hold filled state for exactly 5 seconds after fill completes
                 const filledHoldEndTime = fillEndTime + config.filledHoldDuration;
