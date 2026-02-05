@@ -1226,20 +1226,21 @@
         });
         
         // Doodle drawing animation - JS-based for accurate path lengths
-        // Each doodle has independent timing: draw → fill starts at 90% → hold filled → fade → restart
+        // Each doodle has its OWN independent animation loop (separate RAF per doodle)
+        // This ensures each doodle's fill triggers 1.5s after ITS OWN draw starts
         function initDoodleAnimations() {
             const doodles = document.querySelectorAll('.doodle-figure');
-            const animationData = [];
             
             // Different timing for each doodle (in milliseconds)
             // Heart: 3s draw, Flower: 5s draw, Star: 4s draw
-            // Fill starts at 90% of draw, quick fill transition (0.1s), hold filled for exactly 5s, then fade out
+            // Fill starts 1.5s after each doodle's draw begins
             const timingConfigs = [
                 { drawDuration: 3000, fillDuration: 100, filledHoldDuration: 5000, fadeDuration: 400 }, // Heart
                 { drawDuration: 5000, fillDuration: 100, filledHoldDuration: 5000, fadeDuration: 400 }, // Flower
                 { drawDuration: 4000, fillDuration: 100, filledHoldDuration: 5000, fadeDuration: 400 }  // Star
             ];
             
+            // Create an independent animation controller for each doodle
             doodles.forEach((svg, index) => {
                 const path = svg.querySelector('.doodle-path');
                 if (!path) return;
@@ -1250,7 +1251,7 @@
                 path.style.fillOpacity = 0;
                 
                 const config = timingConfigs[index] || timingConfigs[0];
-                // Fill starts at FIXED 1500ms (1.5 seconds) after cycle starts
+                // Fill starts at FIXED 1500ms (1.5 seconds) after THIS doodle's cycle starts
                 const fillStartTime = 1500;
                 // Fill ends quickly after it starts (100ms transition)
                 const fillEndTime = fillStartTime + config.fillDuration;
@@ -1259,74 +1260,69 @@
                 // Total cycle includes the fade out
                 const totalCycle = filledHoldEndTime + config.fadeDuration;
                 
-                animationData.push({
-                    path: path,
-                    length: length,
-                    drawDuration: config.drawDuration,
-                    fillStartTime: fillStartTime,
-                    fillEndTime: fillEndTime,
-                    filledHoldEndTime: filledHoldEndTime,
-                    fillDuration: config.fillDuration,
-                    filledHoldDuration: config.filledHoldDuration,
-                    fadeDuration: config.fadeDuration,
-                    totalCycle: totalCycle,
-                    startTime: performance.now() // Each starts immediately, cycles independently
-                });
-            });
-            
-            function animateDoodles(timestamp) {
-                animationData.forEach(data => {
-                    // Calculate where we are in this doodle's cycle
-                    const elapsed = timestamp - data.startTime;
-                    const cycleTime = elapsed % data.totalCycle;
+                // This doodle's own state - completely independent of other doodles
+                let cycleStartTime = performance.now();
+                
+                // Each doodle gets its own RAF loop
+                function animateThisDoodle(timestamp) {
+                    // Calculate where we are in THIS doodle's cycle
+                    const elapsed = timestamp - cycleStartTime;
+                    const cycleTime = elapsed % totalCycle;
+                    
+                    // Reset cycle start time when we loop
+                    if (elapsed >= totalCycle) {
+                        cycleStartTime = timestamp - (elapsed % totalCycle);
+                    }
                     
                     // Calculate stroke progress (0 to 1) based on where we are
                     // Stroke draws from 0 to drawDuration
                     let strokeProgress = 0;
-                    if (cycleTime < data.drawDuration) {
-                        strokeProgress = cycleTime / data.drawDuration;
+                    if (cycleTime < config.drawDuration) {
+                        strokeProgress = cycleTime / config.drawDuration;
                     } else {
                         strokeProgress = 1; // Fully drawn
                     }
                     const easedStroke = easeInOutCubic(strokeProgress);
                     
                     // Calculate fill progress (0 to 1)
-                    // Fill starts at fillStartTime (90% of draw) and ends at fillEndTime
+                    // Fill starts at 1.5s into THIS doodle's cycle
                     let fillProgress = 0;
-                    if (cycleTime >= data.fillStartTime && cycleTime < data.fillEndTime) {
-                        fillProgress = (cycleTime - data.fillStartTime) / data.fillDuration;
-                    } else if (cycleTime >= data.fillEndTime) {
+                    if (cycleTime >= fillStartTime && cycleTime < fillEndTime) {
+                        fillProgress = (cycleTime - fillStartTime) / config.fillDuration;
+                    } else if (cycleTime >= fillEndTime) {
                         fillProgress = 1; // Fully filled
                     }
                     const easedFill = easeInOutCubic(fillProgress);
                     
                     // Determine which phase we're in for opacity
-                    if (cycleTime < data.filledHoldEndTime) {
+                    if (cycleTime < filledHoldEndTime) {
                         // Drawing, filling, or holding filled - full opacity
-                        data.path.style.strokeDashoffset = data.length * (1 - easedStroke);
-                        data.path.style.fillOpacity = easedFill;
-                        data.path.style.opacity = 1;
+                        path.style.strokeDashoffset = length * (1 - easedStroke);
+                        path.style.fillOpacity = easedFill;
+                        path.style.opacity = 1;
                     } else {
                         // FADE OUT phase
-                        const fadeProgress = (cycleTime - data.filledHoldEndTime) / data.fadeDuration;
+                        const fadeProgress = (cycleTime - filledHoldEndTime) / config.fadeDuration;
                         const opacity = Math.max(0, 1 - easeInOutCubic(fadeProgress));
-                        data.path.style.strokeDashoffset = 0; // Fully drawn
-                        data.path.style.fillOpacity = 1; // Fully filled
-                        data.path.style.opacity = opacity;
+                        path.style.strokeDashoffset = 0; // Fully drawn
+                        path.style.fillOpacity = 1; // Fully filled
+                        path.style.opacity = opacity;
                         
                         // Reset at end of fade for next cycle
                         if (fadeProgress >= 1) {
-                            data.path.style.strokeDashoffset = data.length;
-                            data.path.style.fillOpacity = 0;
-                            data.path.style.opacity = 1;
+                            path.style.strokeDashoffset = length;
+                            path.style.fillOpacity = 0;
+                            path.style.opacity = 1;
                         }
                     }
-                });
+                    
+                    // Continue THIS doodle's independent animation loop
+                    requestAnimationFrame(animateThisDoodle);
+                }
                 
-                requestAnimationFrame(animateDoodles);
-            }
-            
-            requestAnimationFrame(animateDoodles);
+                // Start this doodle's independent animation
+                requestAnimationFrame(animateThisDoodle);
+            });
         }
         
         // Run after DOM is ready
