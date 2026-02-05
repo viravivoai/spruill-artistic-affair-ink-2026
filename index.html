@@ -1255,10 +1255,11 @@
                 const fillStartTime = 1500;
                 // Fill ends quickly after it starts (100ms transition)
                 const fillEndTime = fillStartTime + config.fillDuration;
-                // Hold filled state for exactly 5 seconds after fill completes
-                const filledHoldEndTime = fillEndTime + config.filledHoldDuration;
-                // Total cycle includes the fade out
-                const totalCycle = filledHoldEndTime + config.fadeDuration;
+                // Fade starts 3 seconds AFTER the draw completes (so doodles desync based on draw duration)
+                const holdAfterDraw = 3000;
+                const fadeStartTime = config.drawDuration + holdAfterDraw;
+                // Total cycle: draw + hold + fade (differs per doodle, causing natural desync)
+                const totalCycle = fadeStartTime + config.fadeDuration;
                 
                 // This doodle's own state - completely independent of other doodles
                 let cycleStartTime = performance.now();
@@ -1295,14 +1296,14 @@
                     const easedFill = easeInOutCubic(fillProgress);
                     
                     // Determine which phase we're in for opacity
-                    if (cycleTime < filledHoldEndTime) {
+                    if (cycleTime < fadeStartTime) {
                         // Drawing, filling, or holding filled - full opacity
                         path.style.strokeDashoffset = length * (1 - easedStroke);
                         path.style.fillOpacity = easedFill;
                         path.style.opacity = 1;
                     } else {
                         // FADE OUT phase
-                        const fadeProgress = (cycleTime - filledHoldEndTime) / config.fadeDuration;
+                        const fadeProgress = (cycleTime - fadeStartTime) / config.fadeDuration;
                         const opacity = Math.max(0, 1 - easeInOutCubic(fadeProgress));
                         path.style.strokeDashoffset = 0; // Fully drawn
                         path.style.fillOpacity = 1; // Fully filled
